@@ -70,11 +70,11 @@ h2 {
 }
 
 .btn-default {
-  background-color: transparent; /* Default background */
-  color: black; /* Text color */
+  background-color: transparent;
+  color: black;
 }
 
 .btn-selected {
-  background-color: green; /* Change to green when selected */
-  color: white; /* Change text color for better contrast */
+  background-color: green;
+  color: white;
 }

@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import './Select.css';
 import lowcarb from './images/lowcarb.svg';
 import filling from './images/filling.svg';
@@ -10,6 +11,8 @@ function Select() {
   const [selectedButtons, setSelectedButtons] = useState([]);
   const [selectedCuisine, setSelectedCuisine] = useState('Select Cuisine');
   const [calories, setCalories] = useState('');
+
+  const navigate = useNavigate();
 
   const selectCuisine = (cuisine) => {
     console.log(`Cuisine selected: ${cuisine}`);
@@ -44,6 +47,8 @@ function Select() {
     setSelectedButtons([]);
     setSelectedCuisine('Select Cuisine');
     setCalories('');
+
+    navigate('/plan')
   };
 
   return (
