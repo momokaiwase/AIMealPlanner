@@ -3,7 +3,7 @@ from fastapi import FastAPI
 from openai import OpenAI
 from fastapi.middleware.cors import CORSMiddleware
 from dotenv import load_dotenv
-
+from pydantic import BaseModel
 
 load_dotenv()
 
@@ -21,6 +21,14 @@ client = OpenAI(
     api_key=os.environ.get("OPENAI_API_KEY"),
 )
 
+class InputQuery(BaseModel):
+    # fields to be determined
+    pass
+
+class Response(BaseModel):
+    # fields to be determined
+    pass
+
 """
 PLAN:
 
@@ -36,6 +44,6 @@ return type needed (what media?)
 
 """
 
-@app.get("/")
-def query(q: str):
+@app.get("/", Response_model=Response)
+def query(query: InputQuery):
     pass
