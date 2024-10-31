@@ -8,8 +8,8 @@ __pycache__
 # See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
 
 # dependencies
-client/node_modules
-/node_modules
+mealplanner/node_modules
+/node_modules/
 /.pnp
 .pnp.js
 
