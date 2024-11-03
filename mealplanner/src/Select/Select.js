@@ -15,7 +15,6 @@ function Select() {
   const navigate = useNavigate();
 
   const selectCuisine = (cuisine) => {
-    console.log(`Cuisine selected: ${cuisine}`);
     setSelectedCuisine(cuisine);
     setDropdownOpen(false);
   };
@@ -40,15 +39,36 @@ function Select() {
       : 'btn-default';
   };
 
-  const handleSubmit = () => {
-    console.log("Selected Buttons:", selectedButtons);
-    console.log("Selected Cuisine:", selectedCuisine);
-    console.log("Calories Input:", calories);
-    setSelectedButtons([]);
-    setSelectedCuisine('Select Cuisine');
-    setCalories('');
+  const handleSubmit = async () => {
+    const data = {
+      selectedButtons,
+      selectedCuisine,
+      calories,
+    };
 
-    navigate('/plan')
+    try {
+      const response = await fetch('http://localhost:8000/query', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(data),
+      });
+
+      if (response.ok) {
+        console.log('Data sent successfully');
+        const responseData = await response.json();
+        console.log('Response from backend:', responseData.message);
+        setSelectedButtons([]);
+        setSelectedCuisine('Select Cuisine');
+        setCalories('');
+        navigate('/plan');
+      } else {
+        console.error('Failed to send data');
+      }
+    } catch (error) {
+      console.error('Error:', error);
+    }
   };
 
   return (

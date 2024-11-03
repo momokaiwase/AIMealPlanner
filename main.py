@@ -22,12 +22,15 @@ client = OpenAI(
 )
 
 class InputQuery(BaseModel):
-    # fields to be determined
-    pass
+    #If you want me to send in different data structures let me know
+    selectedButtons: list[str]
+    selectedCuisine: str
+    calories: str
+
 
 class Response(BaseModel):
-    # fields to be determined
-    pass
+    #placeholder for testing, feel free to change
+    message: str
 
 """
 PLAN:
@@ -43,7 +46,16 @@ TO DETERMINE:
 return type needed (what media?)
 
 """
-
-@app.get("/", Response_model=Response)
+@app.post("/query", response_model=Response)
 def query(query: InputQuery):
-    pass
+    # Process the data received from the frontend (query)
+    selected_buttons = query.selectedButtons
+    selected_cuisine = query.selectedCuisine
+    calories = query.calories
+
+    #Testing return message feel free to change
+    return {"message": f"Received buttons: {selected_buttons}, Cuisine: {selected_cuisine}, Calories: {calories}"} 
+
+@app.get("/", response_model=Response)
+def read_root():
+    return {"message": "API is running"}
