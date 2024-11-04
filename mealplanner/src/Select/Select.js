@@ -17,7 +17,6 @@ function Select() {
   const navigate = useNavigate();
 
   const selectCuisine = (cuisine) => {
-    console.log(`Cuisine selected: ${cuisine}`);
     setSelectedCuisine(cuisine);
     setDropdownOpen(false);
   };
