@@ -6,6 +6,8 @@ import filling from './images/filling.svg';
 import healthy from './images/healthy.svg';
 import lowfat from './images/lowfat.svg';
 
+const url = process.env.NODE_ENV === 'development' ? 'http://127.0.0.1:8000/' : 'https://human-ai.onrender.com/';
+
 function Select() {
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [selectedButtons, setSelectedButtons] = useState([]);
@@ -39,36 +41,25 @@ function Select() {
       : 'btn-default';
   };
 
-  const handleSubmit = async () => {
-    const data = {
-      selectedButtons,
-      selectedCuisine,
-      calories,
-    };
-
-    try {
-      const response = await fetch('http://localhost:8000/query', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(data),
+  const handleSubmit = () => {
+    console.log("Selected Buttons:", selectedButtons);
+    console.log("Selected Cuisine:", selectedCuisine);
+    console.log("Calories Input:", calories);
+    fetch(`${url}get_week`, {
+      method: "POST",
+      body: JSON.stringify({restrictions : selectedButtons, cuisine: selectedCuisine, calories: calories }),
+      headers: {
+        "Content-Type": "application/json",
+      },
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        console.log(data);
+        navigate('/plan', { state: { planData: data } });
       });
-
-      if (response.ok) {
-        console.log('Data sent successfully');
-        const responseData = await response.json();
-        console.log('Response from backend:', responseData.message);
-        setSelectedButtons([]);
-        setSelectedCuisine('Select Cuisine');
-        setCalories('');
-        navigate('/plan');
-      } else {
-        console.error('Failed to send data');
-      }
-    } catch (error) {
-      console.error('Error:', error);
-    }
+    setSelectedButtons([]);
+    setSelectedCuisine('Select Cuisine');
+    setCalories('');
   };
 
   return (
