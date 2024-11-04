@@ -58,7 +58,7 @@ function Plan() {
     <div className="p-4">
       <h2 className="text-4xl font-semibold mt-10 mb-20 text-center">{title}</h2>
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-6">
-        {planData && Object.keys(planData).map((day, index) => (
+        {planData && Object.keys(recipesData).map((day, index) => (
           <div
             key={day}
             className="relative border-2 border-gray-300 rounded-3xl p-4 shadow-md h-[480px] overflow-hidden"
