@@ -6,6 +6,8 @@ import filling from './images/filling.svg';
 import healthy from './images/healthy.svg';
 import lowfat from './images/lowfat.svg';
 
+const url = process.env.NODE_ENV === 'development' ? 'http://127.0.0.1:8000/' : 'https://human-ai.onrender.com/';
+
 function Select() {
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [selectedButtons, setSelectedButtons] = useState([]);
@@ -44,11 +46,21 @@ function Select() {
     console.log("Selected Buttons:", selectedButtons);
     console.log("Selected Cuisine:", selectedCuisine);
     console.log("Calories Input:", calories);
+    fetch(`${url}get_week`, {
+      method: "POST",
+      body: JSON.stringify({restrictions : selectedButtons, cuisine: selectedCuisine, calories: calories }),
+      headers: {
+        "Content-Type": "application/json",
+      },
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        console.log(data);
+        navigate('/plan', { state: { planData: data } });
+      });
     setSelectedButtons([]);
     setSelectedCuisine('Select Cuisine');
     setCalories('');
-
-    navigate('/plan')
   };
 
   return (

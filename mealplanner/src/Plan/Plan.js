@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import arrow from './images/arrow.svg';
+import { useLocation } from 'react-router-dom';
 
 const recipesData = {
   Sunday: ['Recipe 1', 'Recipe 2', 'Recipe 3'],
@@ -44,6 +45,9 @@ function formatDate(date) {
 }
 
 function Plan() {
+  const location = useLocation();
+  const planData = location.state?.planData;
+  console.log('Plan Data:', planData);
   const [hoveredInfo, setHoveredInfo] = useState(null);
   const weekDates = getCurrentWeekDates();
   const startDate = weekDates[0];
@@ -53,9 +57,8 @@ function Plan() {
   return (
     <div className="p-4">
       <h2 className="text-4xl font-semibold mt-10 mb-20 text-center">{title}</h2>
-
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-6">
-        {Object.keys(recipesData).map((day, index) => (
+        {planData && Object.keys(planData).map((day, index) => (
           <div
             key={day}
             className="relative border-2 border-gray-300 rounded-3xl p-4 shadow-md h-[480px] overflow-hidden"
