@@ -1,31 +1,46 @@
 import React, { useState } from 'react';
 import arrow from './images/arrow.svg';
-import { useLocation } from 'react-router-dom';
-
-const recipesData = {
-  Sunday: ['Recipe 1', 'Recipe 2', 'Recipe 3'],
-  Monday: ['Recipe 1', 'Recipe 2', 'Recipe 3'],
-  Tuesday: ['Recipe 1', 'Recipe 2', 'Recipe 3'],
-  Wednesday: ['Recipe 1', 'Recipe 2', 'Recipe 3'],
-  Thursday: ['Recipe 1', 'Recipe 2', 'Recipe 3'],
-  Friday: ['Recipe 1', 'Recipe 2', 'Recipe 3'],
-  Saturday: ['Recipe 1', 'Recipe 2', 'Recipe 3'],
-};
+import { useNavigate, useLocation } from 'react-router-dom';
 
 const recipeColors = {
-  'Recipe 1': 'bg-[#FAF1C0]', // light yellow
-  'Recipe 2': 'bg-[#C9E4DE]', // light green
-  'Recipe 3': 'bg-[#C6DEF1]', // light blue
+  0: 'bg-[#FAF1C0]', // light yellow
+  1: 'bg-[#C9E4DE]', // light green
+  2: 'bg-[#C6DEF1]', // light blue
 };
 
-const nutritionData = {
-  Sunday: { calories: 2000, sodium: '1500mg', fat: '30g', protein: '100g' },
-  Monday: { calories: 1800, sodium: '1400mg', fat: '25g', protein: '90g' },
-  Tuesday: { calories: 1900, sodium: '1300mg', fat: '27g', protein: '85g' },
-  Wednesday: { calories: 2100, sodium: '1600mg', fat: '32g', protein: '95g' },
-  Thursday: { calories: 2000, sodium: '1500mg', fat: '28g', protein: '100g' },
-  Friday: { calories: 2200, sodium: '1700mg', fat: '35g', protein: '110g' },
-  Saturday: { calories: 2300, sodium: '1800mg', fat: '38g', protein: '120g' },
+const extractRecipeData = (plan) => {
+  const recipesData = {};
+  Object.keys(plan.plan).forEach(day => {
+    const breakfast = plan.plan[day].breakfast;
+    const lunch = plan.plan[day].lunch;
+    const dinner = plan.plan[day].dinner;
+    recipesData[day] = [breakfast, lunch, dinner];
+  });
+  return recipesData;
+};
+
+const extractNutritionData = (plan) => {
+  const nutritionData = {};
+  Object.keys(plan.plan).forEach(day => {
+    const nutrition = plan.plan[day].nutrition;
+    if (nutrition) {
+      const {calories, sodium, fat, protein} = nutrition;
+      nutritionData[day] = {
+        calories: calories,
+        sodium: `${sodium}mg`,
+        fat: `${fat}g`,
+        protein: `${protein}g`
+      };
+    } else {
+      nutritionData[day] = { 
+        calories: 0, 
+        sodium: 0, 
+        fat: 0, 
+        protein: 0 
+      };
+    }
+  });
+  return nutritionData;
 };
 
 function getCurrentWeekDates() {
@@ -48,45 +63,55 @@ function Plan() {
   const location = useLocation();
   const planData = location.state?.planData;
   console.log('Plan Data:', planData);
+  const nutritionData = extractNutritionData(planData);
+  const recipesData = extractRecipeData(planData);
   const [hoveredInfo, setHoveredInfo] = useState(null);
   const weekDates = getCurrentWeekDates();
   const startDate = weekDates[0];
   const endDate = weekDates[weekDates.length - 1];
   const title = `Meal Plan for ${formatDate(startDate)} - ${formatDate(endDate)}`;
+  const navigate = useNavigate();
+
+  const handleRecipeClick = (recipe) => {
+    navigate('/recipe', { state: { recipe } });
+    console.log('Clicked Recipe:', recipe);
+  };
 
   return (
     <div className="p-4">
-      <h2 className="text-4xl font-semibold mt-10 mb-20 text-center">{title}</h2>
+      <h2 className="text-4xl font-semibold mt-8 mb-16 text-center">{title}</h2>
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-6">
         {planData && Object.keys(recipesData).map((day, index) => (
           <div
             key={day}
-            className="relative border-2 border-gray-300 rounded-3xl p-4 shadow-md h-[480px] overflow-hidden"
+            className="relative border-2 border-gray-300 rounded-3xl p-4 shadow-md h-[580px] pb-24 overflow-hidden flex flex-col"
           >
             <h3 className="text-xl font-medium mb-2 text-center">{day}</h3>
             <p className="text-center text-gray-600 mb-6">{formatDate(weekDates[index])}</p>
 
             <div
-              className={`space-y-4 transition-all duration-300 ${
+              className={`space-y-4 transition-all duration-300 flex-grow flex flex-col justify-between ${
                 hoveredInfo === day ? 'hidden' : 'block'
               }`}
             >
               {recipesData[day].map((recipe, recipeIndex) => (
                 <button
                   key={recipeIndex}
-                  className={`${recipeColors[recipe]} text-black text-sm font-medium border border-gray-400 py-8 px-8 rounded-3xl w-full`}
+                  className={`${recipeColors[recipeIndex]} text-black text-sm font-medium border border-gray-400 py-8 px-8 rounded-3xl w-full flex-grow`}
+                  onClick={() => handleRecipeClick(recipe)}
                 >
-                  {recipe}
+                  {recipe.meal}
                 </button>
               ))}
             </div>
 
             <div
               className={`absolute bottom-0 left-0 right-0 bg-gray-200 text-gray-600 cursor-pointer p-2 transition-all duration-300 ${
-                hoveredInfo === day ? 'h-[380px]' : 'h-16'
+                hoveredInfo === day ? 'h-[480px]' : 'h-16'
               }`}
               onMouseEnter={() => setHoveredInfo(day)}
-              onMouseLeave={() => setHoveredInfo(null)}
+              onMouseLeave={() => setHoveredInfo(null)} 
+              style={{ transition: 'height 0.3s ease-in-out'}}
             >
               {hoveredInfo === day ? (
                 <div className="text-center text-black">

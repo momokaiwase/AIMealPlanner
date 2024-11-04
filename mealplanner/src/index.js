@@ -5,6 +5,7 @@ import './index.css';
 import Select from './Select/Select';
 import Plan from './Plan/Plan';
 import Loading from './Loading/Loading'
+import Recipe from './Recipe/Recipe'
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
@@ -14,6 +15,7 @@ root.render(
         <Route path="/" element={<Select />} />
         <Route path="/plan" element={<Plan />} />
         <Route path="/loading" element={<Loading />} />
+        <Route path="/recipe" element={<Recipe />} />
       </Routes>
     </Router>
   </React.StrictMode>
