@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import arrow from './images/arrow.svg';
 import { useNavigate, useLocation } from 'react-router-dom';
+import './Plan.css';
 
 const recipeColors = {
   0: 'bg-[#FAF1C0]', // light yellow
@@ -91,7 +92,7 @@ function Plan() {
             <div
               className={`space-y-4 transition-all duration-300 flex-grow flex flex-col justify-between ${
                 hoveredInfo === day ? 'hidden' : 'block'
-              }`}
+              } scrollable`}
             >
               {recipesData[day].map((recipe, recipeIndex) => (
                 <button
@@ -100,6 +101,8 @@ function Plan() {
                   onClick={() => handleRecipeClick(recipe)}
                 >
                   {recipe.meal}
+                  <hr className="stylized-hr" />
+                  <div>{recipe.description}</div>
                 </button>
               ))}
             </div>
