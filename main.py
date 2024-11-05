@@ -31,7 +31,6 @@ class WeekRequest(BaseModel):
 class Meal(BaseModel):
     meal: str
     description: str
-    recipe: str
 
 class Nutrition(BaseModel):
     calories: int
@@ -56,7 +55,6 @@ class DayRecipes(BaseModel):
 
 class WeeklyPlan(BaseModel):
     plan : Dict[str, DayPlan]
-    recipes: Dict[str, DayRecipes]
 
 def generate_recipe(meal: str, description: str):
     system_prompt = """
@@ -96,21 +94,15 @@ def generate_day(history: list, restrictions: list, cuisine: str, calories: int)
         response_format = DayPlan
     )
     return response.choices[0].message.content
+
 @app.post("/get_week", response_model=WeeklyPlan)
 def get_week(request: WeekRequest):
     try:
         history = {}
-        all_recipes = {}
-        one_day_recipes = {}
         for day in ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]:
             plan = generate_day(request.restrictions, request.cuisine, request.calories, history)
-            for meal in ["breakfast", "lunch", "dinner"]:
-                json_plan = json.loads(plan)
-                recipe = generate_recipe(json_plan[meal]["meal"], json_plan[meal]["description"])
-                one_day_recipes[meal] = json.loads(recipe)
             history[day] = json.loads(plan)
-            all_recipes[day] = one_day_recipes
-        return WeeklyPlan(plan = history, recipes = all_recipes)
+        return WeeklyPlan(plan = history)
     except Exception as e:
         # retain previously raised HTTPExceptions, otherwise default to 500
         if type(e) is HTTPException:
