@@ -75,11 +75,9 @@ def get_week(request: WeekRequest):
         for day in ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]:
             plan = generate_day(request.restrictions, request.cuisine, request.calories, history)
             history[day] = json.loads(plan)
-        print(history)
         return WeeklyPlan(plan = history)
     except Exception as e:
         # retain previously raised HTTPExceptions, otherwise default to 500
-        print(e)
         if type(e) is HTTPException:
             raise e
         raise HTTPException(status_code=500, detail="Internal Server Error")
