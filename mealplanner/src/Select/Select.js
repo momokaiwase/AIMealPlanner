@@ -42,9 +42,6 @@ function Select() {
   };
 
   const handleSubmit = () => {
-    console.log("Selected Buttons:", selectedButtons);
-    console.log("Selected Cuisine:", selectedCuisine);
-    console.log("Calories Input:", calories);
     fetch(`${url}get_week`, {
       method: "POST",
       body: JSON.stringify({restrictions : selectedButtons, cuisine: selectedCuisine, calories: calories }),
@@ -54,7 +51,6 @@ function Select() {
     })
       .then((response) => response.json())
       .then((data) => {
-        console.log(data);
         navigate('/plan', { state: { planData: data } });
       });
     setSelectedButtons([]);
