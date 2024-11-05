@@ -1,0 +1,22 @@
+.scrollable {
+    overflow-y: auto;
+    max-height: 580px; /* Adjust the height as needed */
+  }
+  
+  /* Hide scrollbar for Webkit browsers (Chrome, Safari) */
+  .scrollable::-webkit-scrollbar {
+    display: none;
+  }
+  
+  /* Hide scrollbar for IE, Edge and Firefox */
+  .scrollable {
+    -ms-overflow-style: none;  /* IE and Edge */
+    scrollbar-width: none;  /* Firefox */
+  }
+
+  .stylized-hr {
+    border: 0;
+    height: 1px;
+    background: linear-gradient(to right, #f1f1f1, #888, #f1f1f1);
+    margin: 10px 0; /* Adjust the margin as needed */
+  }
