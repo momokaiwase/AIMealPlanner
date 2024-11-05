@@ -62,7 +62,6 @@ function formatDate(date) {
 function Plan() {
   const location = useLocation();
   const planData = location.state?.planData;
-  console.log('Plan Data:', planData);
   const nutritionData = extractNutritionData(planData);
   const recipesData = extractRecipeData(planData);
   const [hoveredInfo, setHoveredInfo] = useState(null);

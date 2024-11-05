@@ -113,7 +113,6 @@ def get_week(request: WeekRequest):
         return WeeklyPlan(plan = history, recipes = all_recipes)
     except Exception as e:
         # retain previously raised HTTPExceptions, otherwise default to 500
-        print(e)
         if type(e) is HTTPException:
             raise e
         raise HTTPException(status_code=500, detail="Internal Server Error")
