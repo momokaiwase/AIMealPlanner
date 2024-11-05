@@ -31,6 +31,7 @@ class WeekRequest(BaseModel):
 class Meal(BaseModel):
     meal: str
     description: str
+    recipe: str
 
 class Nutrition(BaseModel):
     calories: int
@@ -44,8 +45,35 @@ class DayPlan(BaseModel):
     dinner: Meal
     nutrition: Nutrition
 
+class Recipe(BaseModel):
+    ingredients: list[str]
+    steps: list[str]
+
+class DayRecipes(BaseModel):
+    breakfast: Recipe
+    lunch: Recipe
+    dinner: Recipe
+
 class WeeklyPlan(BaseModel):
     plan : Dict[str, DayPlan]
+    recipes: Dict[str, DayRecipes]
+
+def generate_recipe(meal: str, description: str):
+    system_prompt = """
+                    You are a helpful assistant that specializes in generating recipes. The user will give you a meal name and description of the meal. It is imperative that you follow these restrictions when generating the meal plan for the day.
+                    The recipe should entail a list of ingredients along with measurements of each ingredient, and a list of numbered steps to create this meal using all the ingredients.
+                    """
+    user_prompt = f"""Create a recipe for {meal}: {description}."""
+    response = client.beta.chat.completions.parse(
+        model="gpt-4o-mini",
+        messages=[
+            {"role": "system", "content": system_prompt},
+            {"role": "user", "content": user_prompt},
+        ],
+        response_format = Recipe
+    )
+    return response.choices[0].message.content
+
 
 def generate_day(history: list, restrictions: list, cuisine: str, calories: int):
     system_prompt = """
@@ -72,10 +100,17 @@ def generate_day(history: list, restrictions: list, cuisine: str, calories: int)
 def get_week(request: WeekRequest):
     try:
         history = {}
+        all_recipes = {}
+        one_day_recipes = {}
         for day in ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]:
             plan = generate_day(request.restrictions, request.cuisine, request.calories, history)
+            for meal in ["breakfast", "lunch", "dinner"]:
+                json_plan = json.loads(plan)
+                recipe = generate_recipe(json_plan[meal]["meal"], json_plan[meal]["description"])
+                one_day_recipes[meal] = json.loads(recipe)
             history[day] = json.loads(plan)
-        return WeeklyPlan(plan = history)
+            all_recipes[day] = one_day_recipes
+        return WeeklyPlan(plan = history, recipes = all_recipes)
     except Exception as e:
         # retain previously raised HTTPExceptions, otherwise default to 500
         if type(e) is HTTPException:
