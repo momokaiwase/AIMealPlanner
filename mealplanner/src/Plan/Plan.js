@@ -63,6 +63,8 @@ function formatDate(date) {
 }
 
 function Plan() {
+  const [loading, setLoading] = useState(false);
+
   const location = useLocation();
   const planData = location.state?.planData;
   const nutritionData = extractNutritionData(planData);
@@ -74,7 +76,15 @@ function Plan() {
   const title = `Meal Plan for ${formatDate(startDate)} - ${formatDate(endDate)}`;
   const navigate = useNavigate();
 
-  const handleRecipeClick = (recipe) => {
+  const LoadingSpinner = () => (
+    <div className="loading-spinner">
+      <div className="spinner"></div>
+      <p>Loading...</p>
+    </div>
+  );
+
+  const handleRecipeClick = (recipe, recipeIndex) => {
+    setLoading(true);
     fetch(`${url}get_recipe`, {
       method: "POST",
       headers: {
@@ -88,68 +98,82 @@ function Plan() {
       .then((response) => response.json())
       .then((data) => {
         console.log('Generated Recipe:', data);
-        navigate('/recipe', { state: { recipe, generatedRecipe: data} });
+        navigate('/recipe', { state: { recipe, generatedRecipe: data, colorIndex: recipeIndex } });
       })
+      .finally(() => {
+        setLoading(false);
+      });
     console.log('Clicked Recipe:', recipe);
     
   };
 
   return (
+
+    
     <div className="p-4">
-      <h2 className="text-4xl font-semibold mt-8 mb-16 text-center">{title}</h2>
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-6">
-        {planData && Object.keys(recipesData).map((day, index) => (
-          <div
-            key={day}
-            className="relative border-2 border-gray-300 rounded-3xl p-4 shadow-md h-[580px] pb-24 overflow-hidden flex flex-col"
-          >
-            <h3 className="text-xl font-medium mb-2 text-center">{day}</h3>
-            <p className="text-center text-gray-600 mb-6">{formatDate(weekDates[index])}</p>
-
-            <div
-              className={`space-y-4 transition-all duration-300 flex-grow flex flex-col justify-between ${
-                hoveredInfo === day ? 'hidden' : 'block'
-              } scrollable`}
-            >
-              {recipesData[day].map((recipe, recipeIndex) => (
-                <button
-                  key={recipeIndex}
-                  className={`${recipeColors[recipeIndex]} text-black text-sm font-medium border border-gray-400 py-8 px-8 rounded-3xl w-full flex-grow`}
-                  onClick={() => handleRecipeClick(recipe)}
-                >
-                  {recipe.meal}
-                  <hr className="stylized-hr" />
-                  <div>{recipe.description}</div>
-                </button>
-              ))}
-            </div>
-
-            <div
-              className={`absolute bottom-0 left-0 right-0 bg-gray-200 text-gray-600 cursor-pointer p-2 transition-all duration-300 ${
-                hoveredInfo === day ? 'h-[480px]' : 'h-16'
-              }`}
-              onMouseEnter={() => setHoveredInfo(day)}
-              onMouseLeave={() => setHoveredInfo(null)} 
-              style={{ transition: 'height 0.3s ease-in-out'}}
-            >
-              {hoveredInfo === day ? (
-                <div className="text-center text-black">
-                  <h4 className="text-md font-bold my-2">Nutritional Content</h4>
-                  <p>Calories: {nutritionData[day].calories}</p>
-                  <p>Sodium: {nutritionData[day].sodium}</p>
-                  <p>Fat: {nutritionData[day].fat}</p>
-                  <p>Protein: {nutritionData[day].protein}</p>
-                </div>
-              ) : (
-                <div className="flex flex-col items-center space-y-0">
-                  <img src={arrow} alt="Arrow" className="" />
-                  <p>More Info</p>
-                </div>
-              )}
-            </div>
+      {loading ? (
+          <div className="loading-screen">
+            <LoadingSpinner />
           </div>
-        ))}
-      </div>
+        ) : (
+          <>
+          <h2 className="text-4xl font-semibold mt-8 mb-16 text-center ">{title}</h2>
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-8 mx-10">
+            {planData && Object.keys(recipesData).map((day, index) => (
+              <div
+                key={day}
+                className="relative border-2 border-gray-300 rounded-3xl p-4 shadow-md h-[580px] pb-24 overflow-hidden flex flex-col"
+              >
+                <h3 className="text-xl font-medium text-center">{day}</h3>
+                <p className="text-center text-gray-600 mb-6">{formatDate(weekDates[index])}</p>
+    
+                <div
+                  className={`space-y-10 transition-all duration-300 flex-grow flex flex-col justify-between ${
+                    hoveredInfo === day ? 'hidden' : 'block'
+                  } scrollable`}
+                >
+                  {recipesData[day].map((recipe, recipeIndex) => (
+                    <button
+                      key={recipeIndex}
+                      className={`${recipeColors[recipeIndex]} text-black text-sm font-medium border border-gray-400 p-2 rounded-3xl w-full flex-grow`}
+                      onClick={() => handleRecipeClick(recipe, recipeIndex)}
+                    >
+                      {recipe.meal}
+                      {/*<hr className="stylized-hr" />
+                      <div>{recipe.description}</div>*/}
+                    </button>
+                  ))}
+                </div>
+    
+                <div
+                  className={`absolute bottom-0 left-0 right-0 bg-gray-200 text-gray-600 cursor-pointer p-2 transition-all duration-300 ${
+                    hoveredInfo === day ? 'h-[490px]' : 'h-16'
+                  }`}
+                  onMouseEnter={() => setHoveredInfo(day)}
+                  onMouseLeave={() => setHoveredInfo(null)} 
+                  style={{ transition: 'height 0.3s ease-in-out'}}
+                >
+                  {hoveredInfo === day ? (
+                    <div className="text-center text-black">
+                      <h4 className="text-md font-bold my-2">Nutritional Content</h4>
+                      <p>Calories: {nutritionData[day].calories}</p>
+                      <p>Sodium: {nutritionData[day].sodium}</p>
+                      <p>Fat: {nutritionData[day].fat}</p>
+                      <p>Protein: {nutritionData[day].protein}</p>
+                    </div>
+                  ) : (
+                    <div className="flex flex-col items-center space-y-0">
+                      <img src={arrow} alt="Arrow" className="" />
+                      <p>More Info</p>
+                    </div>
+                  )}
+                </div>
+              </div>
+            ))}
+          </div>
+          </>
+        )
+      }
     </div>
   );
 }
