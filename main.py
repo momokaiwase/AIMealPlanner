@@ -58,6 +58,7 @@ class WeeklyPlan(BaseModel):
 
 class DailyRecipe(BaseModel):
     details : dict
+    image_url: str
 
 def generate_recipe(meal: str, description: str):
     system_prompt = """
@@ -74,6 +75,22 @@ def generate_recipe(meal: str, description: str):
         response_format = Recipe
     )
     return response.choices[0].message.content
+
+def generate_recipe_image(meal: str, description: str):
+    # Create a prompt to generate an image for the recipe using DALL-E 2
+    dalle_prompt = f"A plate of {meal}: {description}. The dish should look appetizing and be well-presented."
+
+    image_response = client.images.generate(
+        model="dall-e-2",
+        prompt=dalle_prompt,
+        size="1024x1024",
+        quality="standard",
+        n=1,
+    )
+
+    image_url = image_response.data[0].url
+
+    return image_url  # Extract image URL from the response
 
 
 def generate_day(history: list, restrictions: list, cuisine: str, calories: int):
@@ -118,7 +135,10 @@ def get_recipe(request: Meal):
         generated_recipe = generate_recipe(request.meal, request.description)
         print(generated_recipe)
         generated_recipe_json = json.loads(generated_recipe)
-        return DailyRecipe(details = generated_recipe_json)
+        
+        image_url = generate_recipe_image(request.meal, request.description)
+        print(image_url)
+        return DailyRecipe(details = generated_recipe_json, image_url=image_url)
     except Exception as e:
         # retain previously raised HTTPExceptions, otherwise default to 500
         print(f"Error occurred: {e}")

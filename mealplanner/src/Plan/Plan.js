@@ -98,7 +98,7 @@ function Plan() {
       .then((response) => response.json())
       .then((data) => {
         console.log('Generated Recipe:', data);
-        navigate('/recipe', { state: { recipe, generatedRecipe: data, colorIndex: recipeIndex } });
+        navigate('/recipe', { state: { recipe, generatedRecipe: data.details, image_url: data.image_url, colorIndex: recipeIndex } });
       })
       .finally(() => {
         setLoading(false);
