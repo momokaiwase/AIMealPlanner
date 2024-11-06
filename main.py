@@ -56,6 +56,9 @@ class DayRecipes(BaseModel):
 class WeeklyPlan(BaseModel):
     plan : Dict[str, DayPlan]
 
+class DailyRecipe(BaseModel):
+    details : dict
+
 def generate_recipe(meal: str, description: str):
     system_prompt = """
                     You are a helpful assistant that specializes in generating recipes. The user will give you a meal name and description of the meal. It is imperative that you follow these restrictions when generating the meal plan for the day.
@@ -108,3 +111,18 @@ def get_week(request: WeekRequest):
         if type(e) is HTTPException:
             raise e
         raise HTTPException(status_code=500, detail="Internal Server Error")
+    
+@app.post("/get_recipe", response_model=DailyRecipe)
+def get_recipe(request: Meal):
+    try:
+        generated_recipe = generate_recipe(request.meal, request.description)
+        print(generated_recipe)
+        generated_recipe_json = json.loads(generated_recipe)
+        return DailyRecipe(details = generated_recipe_json)
+    except Exception as e:
+        # retain previously raised HTTPExceptions, otherwise default to 500
+        print(f"Error occurred: {e}")
+        if type(e) is HTTPException:
+            raise e
+        raise HTTPException(status_code=500, detail="Internal Server Error")
+
