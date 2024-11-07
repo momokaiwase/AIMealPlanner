@@ -6,7 +6,7 @@ import filling from './images/filling.svg';
 import healthy from './images/healthy.svg';
 import lowfat from './images/lowfat.svg';
 
-const url = process.env.NODE_ENV === 'development' ? 'http://127.0.0.1:8000/' : 'https://human-ai.onrender.com/';
+const url = process.env.NODE_ENV === 'development' ? 'http://127.0.0.1:8000/' : 'https://mealplanner-is1t.onrender.com/';
 function Select() {
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [selectedButtons, setSelectedButtons] = useState([]);

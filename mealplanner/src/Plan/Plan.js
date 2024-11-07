@@ -3,7 +3,7 @@ import arrow from './images/arrow.svg';
 import { useNavigate, useLocation } from 'react-router-dom';
 import './Plan.css';
 
-const url = process.env.NODE_ENV === 'development' ? 'http://127.0.0.1:8000/' : 'https://human-ai.onrender.com/';
+const url = process.env.NODE_ENV === 'development' ? 'http://127.0.0.1:8000/' : 'https://mealplanner-is1t.onrender.com/';
 
 const recipeColors = {
   0: 'bg-[#FAF1C0]', // light yellow
