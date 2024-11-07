@@ -11,7 +11,7 @@ const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
     <Router>
-      <Routes>
+      <Routes basename="/MealPlanner">
         <Route path="/" element={<Select />} />
         <Route path="/plan" element={<Plan />} />
         <Route path="/loading" element={<Loading />} />
