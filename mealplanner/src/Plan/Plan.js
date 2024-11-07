@@ -84,27 +84,50 @@ function Plan() {
   );
 
   const handleRecipeClick = (recipe, recipeIndex) => {
-    setLoading(true);
-    fetch(`${url}get_recipe`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        meal: recipe.meal,
-        description: recipe.description,
-      })
-    })
-      .then((response) => response.json())
-      .then((data) => {
-        console.log('Generated Recipe:', data);
-        navigate('/recipe', { state: { recipe, generatedRecipe: data.details, image_url: data.image_url, colorIndex: recipeIndex } });
-      })
-      .finally(() => {
-        setLoading(false);
+    const recipeKey = `${recipe.meal}-${recipeIndex}`;
+  
+    const storedRecipe = localStorage.getItem(recipeKey);
+  
+    if (storedRecipe) {
+      const parsedRecipe = JSON.parse(storedRecipe);
+      navigate('/recipe', { 
+        state: { 
+          recipe, 
+          generatedRecipe: parsedRecipe.details, 
+          image_url: parsedRecipe.image_url, 
+          colorIndex: recipeIndex 
+        }
       });
-    console.log('Clicked Recipe:', recipe);
-    
+    } else {
+      setLoading(true);
+      fetch(`${url}get_recipe`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          meal: recipe.meal,
+          description: recipe.description,
+        })
+      })
+        .then((response) => response.json())
+        .then((data) => {
+          console.log('Generated Recipe:', data);
+          localStorage.setItem(recipeKey, JSON.stringify(data));
+          navigate('/recipe', { 
+            state: { 
+              recipe, 
+              generatedRecipe: data.details, 
+              image_url: data.image_url, 
+              colorIndex: recipeIndex 
+            }
+          });
+        })
+        .finally(() => {
+          setLoading(false);
+        });
+      console.log('Clicked Recipe:', recipe);
+    }
   };
 
   return (

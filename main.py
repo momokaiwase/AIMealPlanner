@@ -118,10 +118,12 @@ def generate_day(history: list, restrictions: list, cuisine: str, calories: int)
 @app.post("/get_week", response_model=WeeklyPlan)
 def get_week(request: WeekRequest):
     try:
+        print("hi")
         history = {}
         for day in ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]:
             plan = generate_day(request.restrictions, request.cuisine, request.calories, history)
             history[day] = json.loads(plan)
+        print("hi")
         return WeeklyPlan(plan = history)
     except Exception as e:
         # retain previously raised HTTPExceptions, otherwise default to 500
