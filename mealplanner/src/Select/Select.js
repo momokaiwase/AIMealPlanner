@@ -47,7 +47,14 @@ function Select() {
     </div>
   );
 
-  const handleSubmit = () => {
+  const handleSubmit = (event) => {
+    event.preventDefault();
+  
+    if (!calories) {
+      alert("Please enter the number of calories.");
+      return;
+    }
+  
     setLoading(true);
     fetch(`${url}get_week`, {
       method: "POST",
@@ -125,6 +132,7 @@ function Select() {
                 </ul>
               )}
             </div>
+            <form onSubmit={handleSubmit}>
             <div className="flex justify-center mb-4">
               <input
                 type="number"
@@ -133,11 +141,13 @@ function Select() {
                 placeholder="Enter Calories"
                 value={calories}
                 onChange={(e) => setCalories(e.target.value)}
+                required
               />
             </div>
-            <div className="flex justify-center">
-              <button className="submit" id="submitBtn" onClick={handleSubmit}>Submit</button>
-            </div>
+              <div className="flex justify-center">
+                <button className="submit" id="submitBtn" type="submit">Submit</button>
+              </div>
+            </form>
         </>
       )}
     </div>
