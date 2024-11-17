@@ -1,0 +1,324 @@
+{
+    "meals": [
+        {
+            "meal": "Spaghetti Carbonara",
+            "description": "A classic Italian pasta dish made with eggs, cheese, pancetta, and pepper."
+        },
+        {
+            "meal": "Chicken Tikka Masala",
+            "description": "Tender chicken marinated in spices and yogurt, cooked in a creamy tomato sauce."
+        },
+        {
+            "meal": "Beef Stroganoff",
+            "description": "Strips of beef cooked in a creamy mushroom sauce, served over egg noodles."
+        },
+        {
+            "meal": "Vegetable Stir-Fry",
+            "description": "A vibrant mix of seasonal vegetables quickly stir-fried with soy sauce and sesame oil."
+        },
+        {
+            "meal": "Caesar Salad",
+            "description": "Crisp romaine lettuce coated in Caesar dressing, topped with croutons and parmesan cheese."
+        },
+        {
+            "meal": "Fish Tacos",
+            "description": "Grilled fish served in corn tortillas with fresh salsa, avocado, and lime."
+        },
+        {
+            "meal": "Mushroom Risotto",
+            "description": "Creamy Arborio rice cooked slowly with mushrooms, broth, and parmesan."
+        },
+        {
+            "meal": "BBQ Ribs",
+            "description": "Tender pork ribs seasoned with a smoky BBQ sauce, grilled to perfection."
+        },
+        {
+            "meal": "Lentil Soup",
+            "description": "Hearty soup made with lentils, carrots, celery, and spices."
+        },
+        {
+            "meal": "Shrimp Scampi",
+            "description": "Saut\u00e9ed shrimp in a garlic butter sauce, served with linguine."
+        },
+        {
+            "meal": "Falafel Wrap",
+            "description": "Crispy falafel balls wrapped in pita with fresh veggies and tahini sauce."
+        },
+        {
+            "meal": "Stuffed Bell Peppers",
+            "description": "Bell peppers filled with a mix of rice, ground meat, and spices, baked to perfection."
+        },
+        {
+            "meal": "Pancakes with Maple Syrup",
+            "description": "Fluffy pancakes served hot and drizzled with pure maple syrup."
+        },
+        {
+            "meal": "Baked Ziti",
+            "description": "Pasta baked in a rich tomato sauce with cheese and Italian sausage."
+        },
+        {
+            "meal": "Quinoa Salad",
+            "description": "Nutritious salad made with quinoa, vegetables, and a lemon vinaigrette."
+        },
+        {
+            "meal": "Teriyaki Chicken",
+            "description": "Chicken marinated in teriyaki sauce and grilled, served with steamed rice."
+        },
+        {
+            "meal": "Eggplant Parmesan",
+            "description": "Breaded and fried eggplant layered with marinara sauce and cheese."
+        },
+        {
+            "meal": "Chili Con Carne",
+            "description": "Spicy stew made with ground beef, beans, tomatoes, and chili spices."
+        },
+        {
+            "meal": "Beef Tacos",
+            "description": "Ground beef seasoned with spices, served in crunchy taco shells with toppings."
+        },
+        {
+            "meal": "Mediterranean Couscous",
+            "description": "Fluffy couscous mixed with olives, tomatoes, feta cheese, and herbs."
+        },
+        {
+            "meal": "Pumpkin Soup",
+            "description": "Smooth and creamy soup made with roasted pumpkin and spiced with nutmeg."
+        },
+        {
+            "meal": "Clam Chowder",
+            "description": "Creamy soup loaded with clams, potatoes, and celery."
+        },
+        {
+            "meal": "Sushi Rolls",
+            "description": "Japanese rolls filled with fresh fish, vegetables, and rice."
+        },
+        {
+            "meal": "Fettuccine Alfredo",
+            "description": "Pasta served in a rich and creamy cheese sauce."
+        },
+        {
+            "meal": "Buffalo Wings",
+            "description": "Spicy chicken wings coated in buffalo sauce, served with blue cheese dip."
+        },
+        {
+            "meal": "Cobb Salad",
+            "description": "Hearty salad with greens, chicken, bacon, eggs, and avocado."
+        },
+        {
+            "meal": "Pork Chops with Applesauce",
+            "description": "Juicy pork chops served with sweet and tangy applesauce."
+        },
+        {
+            "meal": "Biryani",
+            "description": "A fragrant rice dish cooked with spices, meat, and dry fruits."
+        },
+        {
+            "meal": "Gnocchi with Marinara",
+            "description": "Soft potato dumplings served with a rich marinara sauce."
+        },
+        {
+            "meal": "Ratatouille",
+            "description": "A vegetable medley stew flavored with herbs and olive oil."
+        },
+        {
+            "meal": "Chicken Noodle Soup",
+            "description": "Comforting soup with chicken, noodles, and vegetables."
+        },
+        {
+            "meal": "Lasagna",
+            "description": "Layers of pasta, meat, cheese, and tomato sauce baked until bubbly."
+        },
+        {
+            "meal": "Pesto Pasta",
+            "description": "Pasta tossed with fresh basil pesto and parmesan cheese."
+        },
+        {
+            "meal": "Grilled Cheese Sandwich",
+            "description": "Melted cheese between two slices of buttered, toasted bread."
+        },
+        {
+            "meal": "Pork Fried Rice",
+            "description": "Stir-fried rice with diced pork, vegetables, and soy sauce."
+        },
+        {
+            "meal": "Chickpea Curry",
+            "description": "Spicy and creamy curry made with chickpeas and coconut milk."
+        },
+        {
+            "meal": "Tom Yum Soup",
+            "description": "A hot and sour Thai soup with shrimp, mushrooms, and herbs."
+        },
+        {
+            "meal": "Crab Cakes",
+            "description": "Crispy cakes made with lump crab meat, served with tartar sauce."
+        },
+        {
+            "meal": "Zucchini Noodles",
+            "description": "Spiralized zucchini tossed with marinara sauce and grated parmesan."
+        },
+        {
+            "meal": "Curry Chicken Salad",
+            "description": "Savory chicken salad with curry powder, grapes, and nuts."
+        },
+        {
+            "meal": "Pork Tenderloin",
+            "description": "Juicy pork tenderloin seasoned and roasted, served with gravy."
+        },
+        {
+            "meal": "Pepperoni Pizza",
+            "description": "Classic pizza topped with marinara sauce, mozzarella cheese, and pepperoni."
+        },
+        {
+            "meal": "Chocolate Chip Cookies",
+            "description": "Soft and chewy cookies packed with chocolate chips."
+        },
+        {
+            "meal": "Egg Salad Sandwich",
+            "description": "Creamy egg salad spread on bread, usually served cold."
+        },
+        {
+            "meal": "Smashed Avocado Toast",
+            "description": "Mashed avocado on toasted bread topped with chili flakes and lemon."
+        },
+        {
+            "meal": "Lamb Kebabs",
+            "description": "Spiced ground lamb skewers grilled to perfection, served with tzatziki."
+        },
+        {
+            "meal": "Caprese Salad",
+            "description": "Fresh tomatoes, mozzarella cheese, and basil drizzled with olive oil."
+        },
+        {
+            "meal": "Baked Salmon",
+            "description": "Salmon fillet baked with lemon, herbs, and garlic."
+        },
+        {
+            "meal": "Peanut Noodles",
+            "description": "Noodles tossed in a creamy peanut sauce with vegetables."
+        },
+        {
+            "meal": "Tandoori Chicken",
+            "description": "Spiced chicken marinated in yogurt and grilled for a smoky flavor."
+        },
+        {
+            "meal": "Pinto Bean Chili",
+            "description": "Vegetarian chili made with pinto beans, tomatoes, and spices."
+        },
+        {
+            "meal": "Fish and Chips",
+            "description": "Deep-fried fish served with crispy chips and tartar sauce."
+        },
+        {
+            "meal": "Mango Sticky Rice",
+            "description": "Sweet rice pudding topped with ripe mango slices and coconut milk."
+        },
+        {
+            "meal": "Steak Fajitas",
+            "description": "Grilled steak served with peppers, onions, and flour tortillas."
+        },
+        {
+            "meal": "Nicoise Salad",
+            "description": "Salad with tuna, hard-boiled eggs, green beans and olives."
+        },
+        {
+            "meal": "Vegetable Sushi",
+            "description": "Sushi rolls filled with fresh vegetables and rice."
+        },
+        {
+            "meal": "Bangers and Mash",
+            "description": "Sausages served with mashed potatoes and onion gravy."
+        },
+        {
+            "meal": "Sweet and Sour Chicken",
+            "description": "Crispy chicken coated in a sweet and tangy sauce."
+        },
+        {
+            "meal": "Fried Rice",
+            "description": "Stir-fried rice mixed with vegetables, eggs, and soy sauce."
+        },
+        {
+            "meal": "Pasta Primavera",
+            "description": "Pasta tossed with fresh vegetables and light olive oil sauce."
+        },
+        {
+            "meal": "Kale Salad with Quinoa",
+            "description": "Nutritious salad made with kale, quinoa, and a lemon vinaigrette."
+        },
+        {
+            "meal": "Bruschetta",
+            "description": "Toasted bread topped with diced tomatoes, garlic, and basil."
+        },
+        {
+            "meal": "Chocolate Mousse",
+            "description": "Rich and fluffy dessert made with dark chocolate and whipped cream."
+        },
+        {
+            "meal": "Bacon-Wrapped Dates",
+            "description": "Sweet dates wrapped in crispy bacon, often stuffed with cheese."
+        },
+        {
+            "meal": "Taco Salad",
+            "description": "Crispy tortilla bowl filled with lettuce, meat, cheese, and toppings."
+        },
+        {
+            "meal": "Grilled Portobello Mushrooms",
+            "description": "Meaty mushrooms marinated and grilled, served as a main dish."
+        },
+        {
+            "meal": "Vanilla Pudding",
+            "description": "Creamy homemade pudding flavored with real vanilla."
+        },
+        {
+            "meal": "Kimchi Fried Rice",
+            "description": "Spicy fried rice stir-fried with kimchi and vegetables."
+        },
+        {
+            "meal": "Cheese Fondue",
+            "description": "Melted cheese served warm with bread for dipping."
+        },
+        {
+            "meal": "Stuffed Cabbage Rolls",
+            "description": "Cabbage leaves filled with a mixture of rice, meat, and spices."
+        },
+        {
+            "meal": "Margarita Pizza",
+            "description": "Classic pizza topped with fresh mozzarella, basil, and tomato sauce."
+        },
+        {
+            "meal": "Omelette",
+            "description": "Fluffy eggs filled with cheese, vegetables, or meats."
+        },
+        {
+            "meal": "Chowder Fries",
+            "description": "Crispy fries topped with creamy chowder and cheese."
+        },
+        {
+            "meal": "Banana Bread",
+            "description": "Moist loaf made with ripe bananas and spices, perfect for breakfast."
+        },
+        {
+            "meal": "Buffet Style Fried Chicken",
+            "description": "Crispy fried chicken served with a selection of sides."
+        },
+        {
+            "meal": "Avocado Lime Rice",
+            "description": "Fluffy rice mixed with avocado and zesty lime juice."
+        },
+        {
+            "meal": "Fruit Salad",
+            "description": "A colorful mix of fresh fruit served as a refreshing dessert."
+        },
+        {
+            "meal": "Coconut Curry Shrimp",
+            "description": "Shrimp cooked in a rich coconut curry sauce with vegetables."
+        },
+        {
+            "meal": "Pasta Salad",
+            "description": "Cold pasta mixed with vegetables, cheese, and Italian dressing."
+        },
+        {
+            "meal": "Vegetable Curry",
+            "description": "A mixed vegetable curry simmered in aromatic spices and coconut milk."
+        }
+    ]
+}
