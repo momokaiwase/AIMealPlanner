@@ -55,15 +55,11 @@ response = client.chat.completions.create(
     }
 )
 
-# Extract and format the response as a dictionary
 meal_data = response.choices[0].message.content.strip()
 
-# Assuming the response is valid JSON and needs to be written to a file
 try:
-    # Parse the response into a dictionary
     meal_dict = json.loads(meal_data)
     
-    # Save the dictionary to a JSON file
     with open("meal_data.json", "w") as f:
         json.dump(meal_dict, f, indent=4)
     print("Data has been saved to meal_data.json")
