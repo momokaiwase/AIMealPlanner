@@ -34,18 +34,23 @@ const LoadingScreen = () => {
 function Select() {
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [selectedButtons, setSelectedButtons] = useState([]);
-  const [selectedCuisine, setSelectedCuisine] = useState('Select Cuisine');
+  const [selectedCuisines, setSelectedCuisines] = useState([]);
   const [calories, setCalories] = useState('');
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
   const navigate = useNavigate();
   
-  const selectCuisine = (cuisine) => {
-    setSelectedCuisine(cuisine);
-    setDropdownOpen(false);
-  };
+  const cuisines = ['Italian', 'Chinese', 'Indian', 'Mexican', 'Japanese', 'Mediterranean', 'French', 'Thai'];
+  const dietaryRestrictions = ['Vegetarian', 'Vegan', 'Gluten-Free', 'Dairy-Free', 'Nut-Free', 'Soy-Free'];
 
   const toggleDropdown = () => {
     setDropdownOpen(!dropdownOpen);
+  };
+
+  const handleCuisineClick = (cuisine) => {
+    setSelectedCuisines((prev) => 
+      prev.includes(cuisine) ? prev.filter((c) => c !== cuisine) : [...prev, cuisine]
+    );
   };
 
   const handleButtonClick = (button) => {
@@ -55,10 +60,22 @@ function Select() {
   };
 
   const handleSubmit = () => {
+    console.log(JSON.stringify({restrictions: selectedButtons, cuisines: selectedCuisines, calories: calories }))
+    if (!calories || calories < 1200) {
+      setError('Your body needs at least 1,200 calories a day, please input a valid caloric value');
+      return;
+    }
+
+    const payload = {
+      restrictions: selectedButtons,
+      cuisines: selectedCuisines, // Ensure this matches the backend model
+      calories: parseInt(calories, 10), // Ensure calories is an integer
+    };
+
     setLoading(true);
     fetch(`${url}get_week`, {
       method: "POST",
-      body: JSON.stringify({restrictions: selectedButtons, cuisine: selectedCuisine, calories: calories }),
+      body: JSON.stringify(payload),
       headers: {
         "Content-Type": "application/json",
       },
@@ -71,8 +88,9 @@ function Select() {
         setLoading(false);
       });
     setSelectedButtons([]);
-    setSelectedCuisine('Select Cuisine');
+    setSelectedCuisines([]);
     setCalories('');
+    setError('');
   };
 
   return (
@@ -84,21 +102,21 @@ function Select() {
           <h2 className="text-4xl font-semibold mt-8 mb-16 text-center text-gray-800">Select Your Preferences</h2>
           <div className="w-full max-w-2xl bg-white p-8 rounded-3xl shadow-lg">
             <div className="mb-6">
-              <label className="block text-gray-700 text-sm font-bold mb-2">Cuisine</label>
+              <label className="block text-gray-700 text-sm font-bold mb-2">Cuisines</label>
               <div className="relative">
                 <button
                   className="w-full bg-gray-200 text-gray-700 py-2 px-4 rounded-lg focus:outline-none focus:shadow-outline"
                   onClick={toggleDropdown}
                 >
-                  {selectedCuisine}
+                  {selectedCuisines.length > 0 ? selectedCuisines.join(', ') : 'Select Cuisines'}
                 </button>
                 {dropdownOpen && (
                   <ul className="absolute w-full bg-white border border-gray-300 rounded-lg mt-2 z-10">
-                    {['Italian', 'Chinese', 'Indian', 'Mexican'].map((cuisine) => (
+                    {cuisines.map((cuisine) => (
                       <li
                         key={cuisine}
-                        className="px-4 py-2 hover:bg-gray-200 cursor-pointer"
-                        onClick={() => selectCuisine(cuisine)}
+                        className={`px-4 py-2 hover:bg-gray-200 cursor-pointer ${selectedCuisines.includes(cuisine) ? 'bg-gray-200' : ''}`}
+                        onClick={() => handleCuisineClick(cuisine)}
                       >
                         {cuisine}
                       </li>
@@ -115,6 +133,7 @@ function Select() {
                 value={calories}
                 onChange={(e) => setCalories(e.target.value)}
               />
+              {error && <p className="text-red-500 text-sm mt-2">{error}</p>}
             </div>
             <div className="mb-6">
               <label className="block text-gray-700 text-sm font-bold mb-2">Preferences</label>
@@ -127,6 +146,20 @@ function Select() {
                   >
                     <img src={item.img} alt={item.label} className="w-8 h-8 mr-2" />
                     <span className="text-gray-700">{item.label}</span>
+                  </button>
+                ))}
+              </div>
+            </div>
+            <div className="mb-6">
+              <label className="block text-gray-700 text-sm font-bold mb-2">Dietary Restrictions</label>
+              <div className="grid grid-cols-2 gap-4">
+                {dietaryRestrictions.map((restriction) => (
+                  <button
+                    key={restriction}
+                    className={`flex items-center justify-center p-4 border rounded-lg ${selectedButtons.includes(restriction) ? 'border-blue-500 bg-blue-100' : 'border-gray-300 bg-white'} hover:shadow-lg transition-shadow duration-300`}
+                    onClick={() => handleButtonClick(restriction)}
+                  >
+                    <span className="text-gray-700">{restriction}</span>
                   </button>
                 ))}
               </div>
