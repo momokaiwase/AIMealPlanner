@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './Select.css';
 import lowcarb from './images/lowcarb.svg';
@@ -7,6 +7,30 @@ import healthy from './images/healthy.svg';
 import lowfat from './images/lowfat.svg';
 
 const url = process.env.NODE_ENV === 'production' ? 'https://mealplanner-is1t.onrender.com/' :  'http://127.0.0.1:8000/';
+
+const LoadingScreen = () => {
+  const messages = [
+    { text: 'Preparing your meal plan...', img: lowcarb },
+    { text: 'Fetching the best recipes...', img: filling },
+    { text: 'Almost ready...', img: healthy },
+  ];
+  const [currentMessageIndex, setCurrentMessageIndex] = useState(0);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentMessageIndex((prevIndex) => (prevIndex + 1) % messages.length);
+    }, 2000);
+    return () => clearInterval(interval);
+  }, []);
+
+  return (
+    <div className="loading-screen flex flex-col items-center justify-center min-h-screen">
+      <img src={messages[currentMessageIndex].img} alt="Loading" className="w-24 h-24 mb-4 animate-fade" />
+      <p className="text-xl text-gray-700 animate-fade">{messages[currentMessageIndex].text}</p>
+    </div>
+  );
+};
+
 function Select() {
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [selectedButtons, setSelectedButtons] = useState([]);
@@ -25,36 +49,12 @@ function Select() {
   };
 
   const handleButtonClick = (button) => {
-    setSelectedButtons((prevSelected) => {
-      if (prevSelected.includes(button)) {
-        return prevSelected.filter((b) => b !== button);
-      } else {
-        return [...prevSelected, button];
-      }
-    });
+    setSelectedButtons((prev) => 
+      prev.includes(button) ? prev.filter((b) => b !== button) : [...prev, button]
+    );
   };
 
-  const buttonClass = (button) => {
-    return selectedButtons.includes(button)
-      ? 'btn-selected'
-      : 'btn-default';
-  };
-
-  const LoadingSpinner = () => (
-    <div className="loading-spinner">
-      <div className="spinner"></div>
-      <p>Loading...</p>
-    </div>
-  );
-
-  const handleSubmit = (event) => {
-    event.preventDefault();
-  
-    if (!calories) {
-      alert("Please enter the number of calories.");
-      return;
-    }
-  
+  const handleSubmit = () => {
     setLoading(true);
     fetch(`${url}get_week`, {
       method: "POST",
@@ -76,82 +76,75 @@ function Select() {
   };
 
   return (
-    <div className="p-4">
-    {loading ? (
-          <div className="loading-screen">
-            <LoadingSpinner />
-          </div>
-        ) : (
+    <div className="p-4 bg-gray-100 min-h-screen flex flex-col items-center">
+      {loading ? (
+        <LoadingScreen />
+      ) : (
         <>
-          <h2 className="text-4xl font-semibold my-12">Make Your Suggestions</h2>
-          <div className="flex justify-center space-x-28 mb-2">
-          <img src={lowcarb} alt="Low Carb" className="w-12 h-12" />
-              <img src={filling} alt="Filling" className="w-12 h-12" />
-              <img src={healthy} alt="Healthy" className="w-12 h-12" />
-              <img src={lowfat} alt="Low Fat" className="w-12 h-12" />
-            </div>
-            <div className="flex justify-center space-x-16 mb-10">
-              <button className={`btn1 ${buttonClass('Low Carb')}`} onClick={() => handleButtonClick('Low Carb')}>Low Carb</button>
-              <button className={`btn1 ${buttonClass('Filling')}`} onClick={() => handleButtonClick('Filling')}>Filling</button>
-              <button className={`btn1 ${buttonClass('Healthy')}`} onClick={() => handleButtonClick('Healthy')}>Healthy</button>
-              <button className={`btn1 ${buttonClass('Low Fat')}`} onClick={() => handleButtonClick('Low Fat')}>Low Fat</button>
-            </div>
-            <div className="flex justify-center space-x-16 mb-10">
-              <button className={`btn2 ${buttonClass('Gluten-Free')}`} onClick={() => handleButtonClick('Gluten-Free')}>Gluten-Free</button>
-              <button className={`btn2 ${buttonClass('Lactose-Free')}`} onClick={() => handleButtonClick('Lactose-Free')}>Lactose-Free</button>
-              <button className={`btn2 ${buttonClass('Nut-Free')}`} onClick={() => handleButtonClick('Nut-Free')}>Nut-Free</button>
-              <button className={`btn2 ${buttonClass('Vegetarian')}`} onClick={() => handleButtonClick('Vegetarian')}>Vegetarian</button>
-            </div>
-            <div className="flex justify-center space-x-16 mb-10">
-              <button className={`btn3 ${buttonClass('Vegan')}`} onClick={() => handleButtonClick('Vegan')}>Vegan</button>
-              <button className={`btn3 ${buttonClass('Halal')}`} onClick={() => handleButtonClick('Halal')}>Halal</button>
-              <button className={`btn3 ${buttonClass('Kosher')}`} onClick={() => handleButtonClick('Kosher')}>Kosher</button>
-            </div>
-            <div className="flex justify-center mb-4 relative">
-              <button
-                className="btn2 bg-gray-300 text-black px-4 py-2 rounded"
-                type="button"
-                id="cuisineDropdown"
-                onClick={toggleDropdown}
-              >
-                {selectedCuisine}
-              </button>
-              {dropdownOpen && (
-                <ul className="dropdown-menu absolute bg-white border border-gray-300 rounded shadow mt-14 z-10 max-h-48 overflow-y-auto">
-                  {['Mexican', 'Indian', 'Chinese', 'Thai', 'x', 'x', 'x', 'x', 'x'].map((cuisine) => (
-                    <li key={cuisine}>
-                      <a
-                        className="dropdown-item block px-4 py-2 text-gray-700 hover:bg-gray-100"
-                        href="#"
+          <h2 className="text-4xl font-semibold mt-8 mb-16 text-center text-gray-800">Select Your Preferences</h2>
+          <div className="w-full max-w-2xl bg-white p-8 rounded-3xl shadow-lg">
+            <div className="mb-6">
+              <label className="block text-gray-700 text-sm font-bold mb-2">Cuisine</label>
+              <div className="relative">
+                <button
+                  className="w-full bg-gray-200 text-gray-700 py-2 px-4 rounded-lg focus:outline-none focus:shadow-outline"
+                  onClick={toggleDropdown}
+                >
+                  {selectedCuisine}
+                </button>
+                {dropdownOpen && (
+                  <ul className="absolute w-full bg-white border border-gray-300 rounded-lg mt-2 z-10">
+                    {['Italian', 'Chinese', 'Indian', 'Mexican'].map((cuisine) => (
+                      <li
+                        key={cuisine}
+                        className="px-4 py-2 hover:bg-gray-200 cursor-pointer"
                         onClick={() => selectCuisine(cuisine)}
                       >
                         {cuisine}
-                      </a>
-                    </li>
-                  ))}
-                </ul>
-              )}
+                      </li>
+                    ))}
+                  </ul>
+                )}
+              </div>
             </div>
-            <form onSubmit={handleSubmit}>
-            <div className="flex justify-center mb-4">
+            <div className="mb-6">
+              <label className="block text-gray-700 text-sm font-bold mb-2">Calories</label>
               <input
                 type="number"
-                className="btn2 border border-gray-300 px-4 py-2 rounded"
-                id="caloriesInput"
-                placeholder="Enter Calories"
+                className="w-full bg-gray-200 text-gray-700 py-2 px-4 rounded-lg focus:outline-none focus:shadow-outline"
                 value={calories}
                 onChange={(e) => setCalories(e.target.value)}
-                required
               />
             </div>
-              <div className="flex justify-center">
-                <button className="submit" id="submitBtn" type="submit">Submit</button>
+            <div className="mb-6">
+              <label className="block text-gray-700 text-sm font-bold mb-2">Preferences</label>
+              <div className="grid grid-cols-2 gap-4">
+                {[{ img: lowcarb, label: 'Low Carb' }, { img: filling, label: 'Filling' }, { img: healthy, label: 'Healthy' }, { img: lowfat, label: 'Low Fat' }].map((item) => (
+                  <button
+                    key={item.label}
+                    className={`flex items-center justify-center p-4 border rounded-lg ${selectedButtons.includes(item.label) ? 'border-blue-500 bg-blue-100' : 'border-gray-300 bg-white'} hover:shadow-lg transition-shadow duration-300`}
+                    onClick={() => handleButtonClick(item.label)}
+                  >
+                    <img src={item.img} alt={item.label} className="w-8 h-8 mr-2" />
+                    <span className="text-gray-700">{item.label}</span>
+                  </button>
+                ))}
               </div>
-            </form>
+            </div>
+            <div className="flex justify-center">
+              <button
+                className="bg-blue-500 text-white py-2 px-4 rounded-lg hover:bg-blue-700 transition-colors duration-300"
+                onClick={handleSubmit}
+                disabled={loading}
+              >
+                {loading ? 'Loading...' : 'Generate Plan'}
+              </button>
+            </div>
+          </div>
         </>
       )}
     </div>
   );
-  
 }
+
 export default Select;

@@ -15,47 +15,48 @@ function Recipe() {
   const color = recipeColors[location.state?.colorIndex];
 
   return (
-    <div>
+    <div className="p-8 bg-gray-100 min-h-screen flex flex-col items-center">
       {recipeData ? (
-        <div>
-          <h1 className="text-3xl font-semibold mx-10 mt-10 mb-4" style={{color: color}}>Recipe: {recipeData.meal}</h1>
-          <h1 className="text-2xl font-normal mx-10 italic">{recipeData.description}</h1>
+        <div className="w-full max-w-4xl bg-white p-8 rounded-3xl shadow-lg">
+          <h1 className="text-4xl font-semibold mb-4 text-center" style={{ color: color }}>
+            Recipe: {recipeData.meal}
+          </h1>
+          <h2 className="text-2xl font-normal italic text-center mb-8">{recipeData.description}</h2>
+          
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div className="col-span-2">
+              {recipeDetails ? (
+                <div className="mb-14">
+                  <h3 className="text-2xl font-medium mb-4">Ingredients:</h3>
+                  <ul className="list-disc list-inside mx-4">
+                    {recipeDetails.ingredients.map((ingredient, index) => (
+                      <li key={index} className="text-lg">{ingredient}</li>
+                    ))}
+                  </ul>
+                  <h3 className="text-2xl font-medium mt-10 mb-4">Steps:</h3>
+                  <ol className="list-decimal list-inside mx-4 space-y-2">
+                    {recipeDetails.steps.map((step, index) => (
+                      <li key={index} className="text-lg">{step}</li>
+                    ))}
+                  </ol>
+                </div>
+              ) : (
+                <p className="text-lg">No recipe details found.</p>
+              )}
+            </div>
+
+            {imageUrl && (
+              <div className="col-span-1 flex justify-center items-start mt-4">
+                <img src={imageUrl} alt={`Image of ${recipeData.meal}`} className="w-full h-auto rounded-lg shadow-md" />
+              </div>
+            )}
+          </div>
         </div>
       ) : (
-        <p>No recipe data found.</p>
+        <p className="text-lg">No recipe data found.</p>
       )}
-      
-      <div className="mx-10 mt-6 grid grid-cols-1 md:grid-cols-3 gap-8">
-        <div className="col-span-2">
-          {recipeDetails ? (
-            <div className="mb-14">
-              <h1 className='text-2xl font-medium mb-2'>Ingredients:</h1>
-              <ul className="list-disc list-inside mx-12">
-                {recipeDetails.ingredients.map((ingredient, index) => (
-                  <li key={index}>{ingredient}</li>
-                ))}
-              </ul>
-              <h1 className='text-2xl font-medium mt-10 mb-2'>Steps:</h1>
-              <ol className="list-decimal list-inside mx-12 space-y-0">
-                {recipeDetails.steps.map((step, index) => (
-                  <li key={index}>{step}</li>
-                ))}
-              </ol>
-            </div>
-          ) : (
-            <p>No recipe details found.</p>
-          )}
-        </div>
-
-        {imageUrl && (
-          <div className="col-span-1 flex justify-center items-start mt-[10px]">
-            <img src={imageUrl} alt={`Image of ${recipeData.meal}`} className="w-96 h-auto my-4" />
-          </div>
-        )}
-      </div>
     </div>
   );
 }
 
 export default Recipe;
-

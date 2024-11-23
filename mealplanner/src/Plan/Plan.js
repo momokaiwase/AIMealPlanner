@@ -6,9 +6,9 @@ import './Plan.css';
 const url = process.env.NODE_ENV === 'production' ? 'https://mealplanner-is1t.onrender.com/' :  'http://127.0.0.1:8000/';
 
 const recipeColors = {
-  0: 'bg-[#FAF1C0]', // light yellow
-  1: 'bg-[#C9E4DE]', // light green
-  2: 'bg-[#C6DEF1]', // light blue
+  0: 'bg-yellow-100', // light yellow
+  1: 'bg-green-100', // light green
+  2: 'bg-blue-100', // light blue
 };
 
 const extractRecipeData = (plan) => {
@@ -131,53 +131,46 @@ function Plan() {
   };
 
   return (
-
-    
-    <div className="p-4">
+    <div className="p-4 bg-gray-100 min-h-screen flex flex-col items-center">
       {loading ? (
-          <div className="loading-screen">
-            <LoadingSpinner />
-          </div>
-        ) : (
-          <>
-          <h2 className="text-4xl font-semibold mt-8 mb-16 text-center ">{title}</h2>
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-8 mx-10">
-            {planData && Object.keys(recipesData).map((day, index) => (
-              <div
-                key={day}
-                className="relative border-2 border-gray-300 rounded-3xl p-4 shadow-md h-[580px] pb-24 overflow-hidden flex flex-col"
-              >
-                <h3 className="text-xl font-medium text-center">{day}</h3>
-                <p className="text-center text-gray-600 mb-6">{formatDate(weekDates[index])}</p>
-    
+        <div className="loading-screen flex items-center justify-center h-full">
+          <LoadingSpinner />
+        </div>
+      ) : (
+        <>
+          <h2 className="text-4xl font-semibold mt-8 mb-16 text-center text-gray-800">{title}</h2>
+          <div className="w-full max-w-8xl bg-white p-8 rounded-3xl shadow-lg">
+            <div className="grid grid-cols-1 md:grid-cols-7 gap-6">
+              {planData && Object.keys(recipesData).map((day, index) => (
                 <div
-                  className={`space-y-10 transition-all duration-300 flex-grow flex flex-col justify-between ${
-                    hoveredInfo === day ? 'hidden' : 'block'
-                  } scrollable`}
-                >
+                key={day}
+                className="relative border-2 border-gray-300 rounded-3xl p-4 shadow-md pb-6 overflow-hidden flex flex-col bg-white hover:shadow-2xl transition-shadow duration-300 full-height"
+              >
+                <h3 className="text-xl font-medium text-center text-gray-700">{day}</h3>
+                <p className="text-center text-gray-500 mb-6">{formatDate(weekDates[index])}</p>
+              
+                <div className="space-y-4 flex-grow hide-scrollbar">
                   {recipesData[day].map((recipe, recipeIndex) => (
                     <button
                       key={recipeIndex}
-                      className={`${recipeColors[recipeIndex]} text-black text-sm font-medium border border-gray-400 p-2 rounded-3xl w-full flex-grow`}
+                      className={`${recipeColors[recipeIndex]} text-black text-sm font-medium border border-gray-400 p-2 rounded-3xl w-full h-20 flex items-center justify-center hover:bg-opacity-75 transition-opacity duration-300`}
                       onClick={() => handleRecipeClick(recipe, recipeIndex)}
                     >
                       {recipe.meal}
-                      {/*<hr className="stylized-hr" />
-                      <div>{recipe.description}</div>*/}
                     </button>
                   ))}
                 </div>
-    
+              
                 <div
-                  className={`absolute bottom-0 left-0 right-0 bg-gray-200 text-gray-600 cursor-pointer p-2 transition-all duration-300 ${
-                    hoveredInfo === day ? 'h-[490px]' : 'h-16'
+                  className={`absolute bottom-0 left-0 right-0 bg-gray-200 text-gray-600 cursor-pointer p-2 rounded-lg transition-all duration-300 ${
+                    hoveredInfo === day ? 'h-auto' : 'h-16'
                   }`}
                   onMouseEnter={() => setHoveredInfo(day)}
                   onMouseLeave={() => setHoveredInfo(null)} 
                   style={{ transition: 'height 0.3s ease-in-out'}}
                 >
                   {hoveredInfo === day ? (
-                    <div className="text-center text-black">
+                    <div className="absolute bottom-0 left-0 right-0 bg-gray-200 text-gray-600 p-4 rounded-lg shadow-lg">
                       <h4 className="text-md font-bold my-2">Nutritional Content</h4>
                       <p>Calories: {nutritionData[day].calories}</p>
                       <p>Sodium: {nutritionData[day].sodium}</p>
@@ -186,17 +179,18 @@ function Plan() {
                     </div>
                   ) : (
                     <div className="flex flex-col items-center space-y-0">
-                      <img src={arrow} alt="Arrow" className="" />
+                      <img src={arrow} alt="Arrow" className="w-6 h-6" />
                       <p>More Info</p>
                     </div>
                   )}
                 </div>
-              </div>
-            ))}
+
+                </div>
+              ))}
+            </div>
           </div>
-          </>
-        )
-      }
+        </>
+      )}
     </div>
   );
 }

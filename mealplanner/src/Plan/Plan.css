@@ -1,16 +1,18 @@
-.scrollable {
-    overflow-y: auto;
-    max-height: 580px; 
-  }
-  
-  .scrollable::-webkit-scrollbar {
-    display: none;
-  }
-  
-  .scrollable {
-    -ms-overflow-style: none;  
-    scrollbar-width: none; 
-  }
+.full-height {
+  height: 55vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.hide-scrollbar {
+  overflow-y: auto;
+  -ms-overflow-style: none;  
+  scrollbar-width: none; 
+}
+
+.hide-scrollbar::-webkit-scrollbar {
+  display: none;
+}
 
   .stylized-hr {
     border: 0;
