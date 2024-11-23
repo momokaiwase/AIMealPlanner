@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './Select.css';
 import lowcarb from './images/lowcarb.svg';
@@ -39,6 +39,7 @@ function Select() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const navigate = useNavigate();
+  const dropdownRef = useRef(null);
   
   const cuisines = ['Italian', 'Chinese', 'Indian', 'Mexican', 'Japanese', 'Mediterranean', 'French', 'Thai'];
   const dietaryRestrictions = ['Vegetarian', 'Vegan', 'Gluten-Free', 'Dairy-Free', 'Nut-Free', 'Soy-Free'];
@@ -68,8 +69,8 @@ function Select() {
 
     const payload = {
       restrictions: selectedButtons,
-      cuisines: selectedCuisines, // Ensure this matches the backend model
-      calories: parseInt(calories, 10), // Ensure calories is an integer
+      cuisines: selectedCuisines,
+      calories: parseInt(calories, 10),
     };
 
     setLoading(true);
@@ -93,6 +94,19 @@ function Select() {
     setError('');
   };
 
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        setDropdownOpen(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [dropdownRef]);
+
   return (
     <div className="p-4 bg-gray-100 min-h-screen flex flex-col items-center">
       {loading ? (
@@ -103,7 +117,7 @@ function Select() {
           <div className="w-full max-w-2xl bg-white p-8 rounded-3xl shadow-lg">
             <div className="mb-6">
               <label className="block text-gray-700 text-sm font-bold mb-2">Cuisines</label>
-              <div className="relative">
+              <div className="relative" ref={dropdownRef}>
                 <button
                   className="w-full bg-gray-200 text-gray-700 py-2 px-4 rounded-lg focus:outline-none focus:shadow-outline"
                   onClick={toggleDropdown}

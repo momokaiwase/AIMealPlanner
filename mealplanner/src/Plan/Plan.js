@@ -153,7 +153,7 @@ function Plan() {
                   {recipesData[day].map((recipe, recipeIndex) => (
                     <button
                       key={recipeIndex}
-                      className={`${recipeColors[recipeIndex]} text-black text-sm font-medium border border-gray-400 p-2 rounded-3xl w-full h-20 flex items-center justify-center hover:bg-opacity-75 transition-opacity duration-300`}
+                      className={`${recipeColors[recipeIndex]} text-black text-sm font-medium border border-gray-400 p-2 rounded-3xl w-full h-20 flex items-center justify-center hover:border-2 hover:border-black hover:bg-opacity-75 transition-opacity duration-300`}
                       onClick={() => handleRecipeClick(recipe, recipeIndex)}
                     >
                       {recipe.meal}
