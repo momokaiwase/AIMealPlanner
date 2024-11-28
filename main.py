@@ -27,6 +27,7 @@ class WeekRequest(BaseModel):
     restrictions: list
     cuisines : list
     calories: int
+    preferences: str
 
 class Meal(BaseModel):
     meal: str
@@ -93,7 +94,7 @@ def generate_recipe_image(meal: str, description: str):
     return image_url  # Extract image URL from the response
 
 
-def generate_day(history: list, restrictions: list, cuisine: list, calories: int):
+def generate_day(history: list, restrictions: list, cuisine: list, calories: int, preferences: str):
     system_prompt = """
                     You are a helpful assistant that specializes in generating daily meal plans. The user will give you a list
                     of dietary restrictions. It is imperative that you follow these restrictions when generating the meal plan for the day.
@@ -106,7 +107,7 @@ def generate_day(history: list, restrictions: list, cuisine: list, calories: int
                     they had requested. Each meal may also be a combination of multiple cuisines.
                     """
     user_prompt = f"""My restrictions are {restrictions}, I would like a {cuisine} meal plan, and I would like to stay under {calories} calories.
-                    I have had {history} in the past. Please generate me a plan that follows these specifications"""
+                    I have had {history} in the past and these are my preferences: {preferences}. Please generate me a plan that follows these specifications"""
     response = client.beta.chat.completions.parse(
         model="gpt-4o-mini",
         messages=[
@@ -122,7 +123,8 @@ def get_week(request: WeekRequest):
     try:
         history = {}
         for day in ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]:
-            plan = generate_day(request.restrictions, request.cuisines, request.calories, history)
+            plan = generate_day(request.restrictions, request.cuisines, request.calories, history, request.preferences)
+            print(request.preferences)
             history[day] = json.loads(plan)
 
         return WeeklyPlan(plan = history)

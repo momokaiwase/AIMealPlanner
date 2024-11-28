@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import arrow from './images/arrow.svg';
 import { useNavigate, useLocation } from 'react-router-dom';
 import './Plan.css';
+import back from './images/back-arrow.svg'
+import front from './images/front-arrow.svg'
 
 const url = process.env.NODE_ENV === 'production' ? 'https://mealplanner-is1t.onrender.com/' :  'http://127.0.0.1:8000/';
 
@@ -62,12 +64,13 @@ function formatDate(date) {
   return date.toLocaleDateString(undefined, options);
 }
 
+
+
 function Plan() {
   const [loading, setLoading] = useState(false);
-
   const location = useLocation();
-  const planData = location.state?.planData;
-  const nutritionData = extractNutritionData(planData);
+  // Retrieve `planData` from location.state or localStorage
+  const planData = location.state?.planData || JSON.parse(localStorage.getItem('planData'));  const nutritionData = extractNutritionData(planData);
   const recipesData = extractRecipeData(planData);
   const [hoveredInfo, setHoveredInfo] = useState(null);
   const weekDates = getCurrentWeekDates();
@@ -76,18 +79,37 @@ function Plan() {
   const title = `Meal Plan for ${formatDate(startDate)} - ${formatDate(endDate)}`;
   const navigate = useNavigate();
 
+  const handleBackClick = () => {
+  const confirmBack = window.confirm(
+    "If you go back, the meal plan will be discarded and you will have to regenerate it. Do you want to proceed?"
+  );
+  if (confirmBack) {
+    navigate('/');
+  }
+};
   const LoadingSpinner = () => (
     <div className="loading-spinner">
       <div className="spinner"></div>
       <p>Loading...</p>
     </div>
-  );
+  );  
+
+  // Handle local storage download
+  const handleDownload = () => {
+    const localStorageData = JSON.stringify(localStorage);
+    const blob = new Blob([localStorageData], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'mealplan.json';
+    a.click();
+    URL.revokeObjectURL(url);
+  };
 
   const handleRecipeClick = (recipe, recipeIndex) => {
     const recipeKey = `${recipe.meal}-${recipeIndex}`;
   
     const storedRecipe = localStorage.getItem(recipeKey);
-  
     if (storedRecipe) {
       const parsedRecipe = JSON.parse(storedRecipe);
       navigate('/recipe', { 
@@ -112,7 +134,6 @@ function Plan() {
       })
         .then((response) => response.json())
         .then((data) => {
-          console.log('Generated Recipe:', data);
           localStorage.setItem(recipeKey, JSON.stringify(data));
           navigate('/recipe', { 
             state: { 
@@ -126,7 +147,6 @@ function Plan() {
         .finally(() => {
           setLoading(false);
         });
-      console.log('Clicked Recipe:', recipe);
     }
   };
 
@@ -138,13 +158,26 @@ function Plan() {
         </div>
       ) : (
         <>
+          <button
+            className="absolute top-4 right-4 p-2 bg-blue-500 text-white rounded-full shadow hover:bg-blue-700"
+            onClick={handleDownload}
+          >
+            Download Plan
+          </button>
+          {/* Back Arrow */}
+          <button
+            className="absolute top-4 left-4 p-2 rounded-full shadow hover:bg-gray-300"
+            onClick={handleBackClick}
+          >
+            <img src={back} alt="Back" className="w-6 h-6" />
+          </button>
           <h2 className="text-4xl font-semibold mt-8 mb-16 text-center text-gray-800">{title}</h2>
           <div className="w-full max-w-8xl bg-white p-8 rounded-3xl shadow-lg">
             <div className="grid grid-cols-1 md:grid-cols-7 gap-6">
               {planData && Object.keys(recipesData).map((day, index) => (
                 <div
                 key={day}
-                className="relative border-2 border-gray-300 rounded-3xl p-4 shadow-md pb-6 overflow-hidden flex flex-col bg-white hover:shadow-2xl transition-shadow duration-300 full-height"
+                className="relative border-2 border-gray-300 rounded-3xl p-4 shadow-md pb-6 overflow-hidden flex flex-col bg-white hover:shadow-2xl transition-shadow duration-300 h-[450px]"
               >
                 <h3 className="text-xl font-medium text-center text-gray-700">{day}</h3>
                 <p className="text-center text-gray-500 mb-6">{formatDate(weekDates[index])}</p>
@@ -157,6 +190,7 @@ function Plan() {
                       onClick={() => handleRecipeClick(recipe, recipeIndex)}
                     >
                       {recipe.meal}
+                      
                     </button>
                   ))}
                 </div>
