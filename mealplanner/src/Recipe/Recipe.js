@@ -116,7 +116,7 @@ function Recipe() {
       <div className="p-8 bg-gray-100 min-h-screen grid grid-cols-1 lg:grid-cols-3 gap-8">
         <div className="lg:col-span-2 flex flex-col items-center">
           {recipeData ? (
-            <div className="w-full max-w-4xl bg-white p-8 rounded-3xl shadow-lg">
+            <div className="w-full max-w-4xl bg-white p-8 ml-24 rounded-3xl shadow-lg">
               <h1 className="text-4xl font-semibold mb-4 text-center" style={{ color: color }}>
                 Recipe: {recipeData.meal}
               </h1>
@@ -155,13 +155,13 @@ function Recipe() {
             <p className="text-lg">No recipe data found.</p>
           )}
         </div>
-        <div className="flex flex-col items-center bg-white p-8 rounded-3xl shadow-lg fixed top-0 right-0 h-full w-1/4">
+        <div className="flex flex-col items-center bg-white p-8 m-8  rounded-3xl shadow-lg fixed top-0 right-0 h-[700px] w-1/4">
           <h2 className="text-2xl font-semibold mb-4" style={{ color: color }}>Chat</h2>
           <div ref={chatContainerRef} className="flex flex-col w-full h-full border rounded-lg p-4 overflow-y-auto space-y-4">
             {messages.map((message, index) => (
             <div
               key={index}
-              className={`mb-4 p-3 max-w-[80%] rounded-lg ${
+              className={`mb-4 p-4 max-w-[80%] rounded-lg ${
                 message.sender === 'user'
                   ? 'text-black ml-auto' // User message (right side)
                   : 'text-black mr-auto' // Bot message (left side)
