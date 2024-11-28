@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import back from './images/back-arrow.svg';
 const url = process.env.NODE_ENV === 'production' ? 'https://mealplanner-is1t.onrender.com/' :  'http://127.0.0.1:8000/';
@@ -9,7 +9,7 @@ function Recipe() {
     1: '#7DBB9D', // light green
     2: '#89B1FF', // light blue
   };
-
+  console.log(localStorage)
   const location = useLocation();
   const recipeData = location.state?.recipe;
   const recipeDetails = location.state?.generatedRecipe;
@@ -19,6 +19,9 @@ function Recipe() {
 
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState('');
+  const recipeKey = location.state?.recipeKey
+
+  const chatContainerRef = useRef(null);
 
   const handleBackClick = () => {
     navigate('/plan');
@@ -58,6 +61,24 @@ function Recipe() {
       const updatedRecipe = data.details;
 
       setMessages([...messages, newMessage, { text: 'Recipe updated successfully!', sender: 'bot' }]);
+      if (recipeKey) {
+        const currentRecipe = JSON.parse(localStorage.getItem(recipeKey));
+  
+        if (currentRecipe) {
+          // Update the recipe with the new details
+          currentRecipe.details = updatedRecipe;
+  
+          // Save the updated recipe back to localStorage
+          localStorage.setItem(recipeKey, JSON.stringify(currentRecipe));
+        } else {
+          console.error('No recipe found in localStorage for the given recipeKey');
+        }
+      } else {
+        console.error('No recipeKey found');
+      }
+  
+      localStorage.setItem('recipeData', JSON.stringify(updatedRecipe));
+
       navigate('/recipe', {
         state: {
           recipe: recipeData,
@@ -70,6 +91,11 @@ function Recipe() {
       setMessages([...messages, newMessage, { text: 'Failed to update recipe.', sender: 'bot' }]);
     }
   };
+  useEffect(() => {
+    if (chatContainerRef.current) {
+      chatContainerRef.current.scrollTop = chatContainerRef.current.scrollHeight;
+    }
+  }, [messages]);
 
   return (
     <>
@@ -122,31 +148,38 @@ function Recipe() {
             <p className="text-lg">No recipe data found.</p>
           )}
         </div>
-        <div className="flex flex-col items-center bg-white p-8 rounded-3xl shadow-lg fixed top-0 right-0 h-full w-1/4">
-          <h2 className="text-2xl font-semibold mb-4">Chat</h2>
-          <div className="flex flex-col w-full h-full border rounded-lg p-4 overflow-y-auto">
+        <div className="flex flex-col items-center bg-white p-8 rounded-3xl shadow-lg fixed top-0 right-0 h-[500px] w-1/4 m-10 mt-40">
+          <h2 className="text-2xl font-semibold mb-4" style={{ color: color }}>Chat</h2>
+          <div ref={chatContainerRef} className="flex flex-col w-full min-h-[300px] border rounded-lg p-4 overflow-y-auto">
             {messages.map((message, index) => (
-              <div key={index} className={`mb-2 ${message.sender === 'user' ? 'text-right' : 'text-left'}`}>
-                <p className={`text-lg ${message.sender === 'user' ? 'text-blue-500' : 'text-green-500'}`}>{message.text}</p>
-              </div>
-            ))}
-            <div className="mt-4">
-              <input
-                type="text"
-                className="w-full p-2 border rounded-lg"
-                placeholder="Type your message..."
-                value={input}
-                onChange={(e) => setInput(e.target.value)}
-                onKeyPress={(e) => e.key === 'Enter' && handleSendMessage()}
-              />
-              <button
-                className="mt-2 p-2 bg-blue-500 text-white rounded-lg"
-                onClick={handleSendMessage}
-              >
-                Send
-              </button>
+            <div
+              key={index}
+              className={`mb-4 p-3 max-w-[80%] rounded-lg ${
+                message.sender === 'user'
+                  ? 'text-black ml-auto' // User message (right side)
+                  : 'text-black mr-auto' // Bot message (left side)
+              }`}
+              style={{ backgroundColor: color }}
+            >
+              <p className="text-m">{message.text}</p>
             </div>
+            ))}
           </div>
+          <input
+            type="text"
+            className="w-full p-2 border rounded-lg mt-2"
+            placeholder="Type your message..."
+            value={input}
+            onChange={(e) => setInput(e.target.value)}
+            onKeyPress={(e) => e.key === 'Enter' && handleSendMessage()}
+          />
+          <button
+            className="mt-4 ml-64 p-2 bg-blue-500 text-white rounded-lg"
+            onClick={handleSendMessage}
+            style={{ backgroundColor: color }}
+          >
+            Send
+          </button>
         </div>
       </div>
     </>
