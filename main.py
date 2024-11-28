@@ -61,6 +61,10 @@ class DailyRecipe(BaseModel):
     details : dict
     image_url: str
 
+class UpdateRecipe(BaseModel):
+    recipe: DailyRecipe
+    update: str
+
 def generate_recipe(meal: str, description: str):
     system_prompt = """
                     You are a helpful assistant that specializes in generating recipes. The user will give you a meal name and description of the meal. It is imperative that you follow these restrictions when generating the meal plan for the day.
@@ -152,3 +156,45 @@ def get_recipe(request: Meal):
             raise e
         raise HTTPException(status_code=500, detail="Internal Server Error")
 
+@app.post("/update_recipe", response_model=DailyRecipe)
+def update_recipe(request: UpdateRecipe):
+    try:
+        recipe = request.recipe
+        update = request.update
+
+
+        system_prompt = """
+                    You are a helpful assistant that specializes in updating recipes. The user will provide you with a recipe and an update to the recipe. It is imperative that you follow these instructions when updating the recipe.
+                    The recipe should entail a list of ingredients along with measurements of each ingredient, and a list of numbered steps to create this meal using all the ingredients. You must update the recipe with the provided information.
+                    You work work in these steps:
+
+                    1. Read the recipe provided by the user.
+                    2. Determine whether the update is relevent to the recipe. If it is not, ask the user for more information and return the original recipe provided by the user.
+                    3. Update the recipe with the provided information.
+                    """
+        
+        user_prompt = f"""
+                    I was given the following recipe:
+                    {recipe.details}
+                    I would like to update the recipe with the following information:
+                    {update}
+                    It is imperative that you follow these instructions when updating the recipe if it is relevant to the recipe. If it is not, please ask me for more information and return the original recipe provided by me.
+
+                    """
+
+        response = client.beta.chat.completions.parse(
+            model="gpt-4o-mini",
+            messages=[
+                {"role": "system", "content": system_prompt},
+                {"role": "user", "content": user_prompt},
+            ],
+            response_format = Recipe
+        )
+
+        return DailyRecipe(details = json.loads(response.choices[0].message.content), image_url=recipe.image_url)
+    except Exception as e:
+        # retain previously raised HTTPExceptions, otherwise default to 500
+        print(f"Error occurred: {e}")
+        if type(e) is HTTPException:
+            raise e
+        raise HTTPException(status_code=500, detail="Internal Server Error")
