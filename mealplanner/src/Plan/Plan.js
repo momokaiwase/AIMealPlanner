@@ -116,7 +116,8 @@ function Plan() {
           recipe, 
           generatedRecipe: parsedRecipe.details, 
           image_url: parsedRecipe.image_url, 
-          colorIndex: recipeIndex 
+          colorIndex: recipeIndex,
+          recipeKey: recipeKey
         }
       });
     } else {
