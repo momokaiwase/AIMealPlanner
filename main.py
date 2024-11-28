@@ -48,6 +48,7 @@ class DayPlan(BaseModel):
 class Recipe(BaseModel):
     ingredients: list[str]
     steps: list[str]
+    response: str
 
 class DayRecipes(BaseModel):
     breakfast: Recipe
@@ -60,6 +61,8 @@ class WeeklyPlan(BaseModel):
 class DailyRecipe(BaseModel):
     details : dict
     image_url: str
+    response: str
+    messages: list[dict]
 
 class UpdateRecipe(BaseModel):
     recipe: DailyRecipe
@@ -148,7 +151,7 @@ def get_recipe(request: Meal):
         
         image_url = generate_recipe_image(request.meal, request.description)
         
-        return DailyRecipe(details = generated_recipe_json, image_url=image_url)
+        return DailyRecipe(details = generated_recipe_json, image_url=image_url, response="", messages=[])
     except Exception as e:
         # retain previously raised HTTPExceptions, otherwise default to 500
         print(f"Error occurred: {e}")
@@ -175,10 +178,14 @@ def update_recipe(request: UpdateRecipe):
         
         user_prompt = f"""
                     I was given the following recipe:
-                    {recipe.details}
+                    {recipe.details.get("ingredients")}
+                    {recipe.details.get("steps")}
+                    
                     I would like to update the recipe with the following information:
                     {update}
                     It is imperative that you follow these instructions when updating the recipe if it is relevant to the recipe. If it is not, please ask me for more information and return the original recipe provided by me.
+                    It is imperative that you do not modify the original recipe or delete any information from the original recipe beyond what is necessary to make the dish. If the user requests to delete important aspects of the dish
+                    or modify the dish in a way that would make it unrecognizable, you must inform the user that you cannot make the requested changes.
 
                     """
 
@@ -191,7 +198,17 @@ def update_recipe(request: UpdateRecipe):
             response_format = Recipe
         )
 
-        return DailyRecipe(details = json.loads(response.choices[0].message.content), image_url=recipe.image_url)
+        existing_messages = request.recipe.messages
+        new_message = {"text": request.update, "sender": "user"}
+        bot_response = {"text": response.choices[0].message.parsed.response, "sender": "bot"}
+        updated_messages = existing_messages + [new_message, bot_response]
+
+        return DailyRecipe(
+            details=json.loads(response.choices[0].message.content),
+            image_url=request.recipe.image_url,
+            response=response.choices[0].message.parsed.response,
+            messages=updated_messages  # Return the updated messages
+        )
     except Exception as e:
         # retain previously raised HTTPExceptions, otherwise default to 500
         print(f"Error occurred: {e}")

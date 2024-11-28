@@ -3,7 +3,6 @@ import arrow from './images/arrow.svg';
 import { useNavigate, useLocation } from 'react-router-dom';
 import './Plan.css';
 import back from './images/back-arrow.svg'
-import front from './images/front-arrow.svg'
 
 const url = process.env.NODE_ENV === 'production' ? 'https://mealplanner-is1t.onrender.com/' :  'http://127.0.0.1:8000/';
 
