@@ -15,6 +15,8 @@ function Recipe() {
   const recipeDetails = location.state?.generatedRecipe;
   const imageUrl = location.state?.image_url;
   const color = recipeColors[location.state?.colorIndex];
+  const recipeKey = location.state?.recipeKey
+
   const navigate = useNavigate();
 
   const [messages, setMessages] = useState([]);
@@ -26,7 +28,6 @@ function Recipe() {
       setMessages(location.state.messages);
     }
   }, [location.state]);
-  const recipeKey = location.state?.recipeKey
 
   const chatContainerRef = useRef(null);
 
@@ -68,6 +69,7 @@ function Recipe() {
   
         if (currentRecipe) {
           // Update the recipe with the new details
+          console.log('Updated Recipe:', updatedRecipe);
           currentRecipe.details = updatedRecipe;
   
           // Save the updated recipe back to localStorage

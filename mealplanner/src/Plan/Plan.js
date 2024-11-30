@@ -1,8 +1,12 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import arrow from './images/arrow.svg';
 import { useNavigate, useLocation } from 'react-router-dom';
 import './Plan.css';
 import back from './images/back-arrow.svg'
+import lowcarb from '../Select/images/lowcarb.svg';
+import filling from '../Select/images/filling.svg';
+import healthy from '../Select/images/healthy.svg';
+import lowfat from '../Select/images/lowfat.svg'
 
 const url = process.env.NODE_ENV === 'production' ? 'https://mealplanner-is1t.onrender.com/' :  'http://127.0.0.1:8000/';
 
@@ -10,6 +14,28 @@ const recipeColors = {
   0: 'bg-yellow-100', // light yellow
   1: 'bg-green-100', // light green
   2: 'bg-blue-100', // light blue
+};
+const LoadingScreen = () => {
+  const messages = [
+    { text: 'Preparing your recipe...', img: lowcarb },
+    { text: 'Choosing ingredients...', img: filling },
+    { text: 'Generating image...', img: lowfat },
+  ];
+  const [currentMessageIndex, setCurrentMessageIndex] = useState(0);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentMessageIndex((prevIndex) => (prevIndex + 1) % messages.length);
+    }, 2000);
+    return () => clearInterval(interval);
+  }, []);
+
+  return (
+    <div className="loading-screen flex flex-col items-center justify-center min-h-screen">
+      <img src={messages[currentMessageIndex].img} alt="Loading" className="w-24 h-24 mb-4 animate-fade" />
+      <p className="text-xl text-gray-700 animate-fade">{messages[currentMessageIndex].text}</p>
+    </div>
+  );
 };
 
 const extractRecipeData = (plan) => {
@@ -76,6 +102,7 @@ function Plan() {
   const startDate = weekDates[0];
   const endDate = weekDates[weekDates.length - 1];
   const title = `Meal Plan for ${formatDate(startDate)} - ${formatDate(endDate)}`;
+  const [popup, setPopup] = useState({ visible: false, image: '', x: 0, y: 0 });
   const navigate = useNavigate();
 
   const handleBackClick = () => {
@@ -104,10 +131,31 @@ function Plan() {
     a.click();
     URL.revokeObjectURL(url);
   };
+  console.log(localStorage)
+
+  const handleRecipeHover = (recipe, recipeIndex, event) => {
+    const recipeKey = `${recipe.meal}-${recipeIndex}`;
+    const storedRecipe = localStorage.getItem(recipeKey);
+
+    if (storedRecipe) {
+      const parsedRecipe = JSON.parse(storedRecipe);
+      const rect = event.target.getBoundingClientRect();
+      setPopup({
+        visible: true,
+        image: parsedRecipe.image_url,
+        x: rect.left + rect.width / 2,
+        y: rect.top - 10, // Adjust this value for positioning above the button
+      });
+    }
+  };
+
+  const handleRecipeMouseLeave = () => {
+    setPopup({ visible: false, image: '', x: 0, y: 0 });
+  };
 
   const handleRecipeClick = (recipe, recipeIndex) => {
     const recipeKey = `${recipe.meal}-${recipeIndex}`;
-  
+    console.log(recipeKey, "recipeKey")
     const storedRecipe = localStorage.getItem(recipeKey);
     if (storedRecipe) {
       const parsedRecipe = JSON.parse(storedRecipe);
@@ -137,10 +185,11 @@ function Plan() {
           localStorage.setItem(recipeKey, JSON.stringify(data));
           navigate('/recipe', { 
             state: { 
-              recipe, 
+              recipe: data, 
               generatedRecipe: data.details, 
               image_url: data.image_url, 
-              colorIndex: recipeIndex 
+              colorIndex: recipeIndex,
+              recipeKey: recipeKey
             }
           });
         })
@@ -154,7 +203,7 @@ function Plan() {
     <div className="p-4 bg-gray-100 min-h-screen flex flex-col items-center">
       {loading ? (
         <div className="loading-screen flex items-center justify-center h-full">
-          <LoadingSpinner />
+          <LoadingScreen />
         </div>
       ) : (
         <>
@@ -171,6 +220,20 @@ function Plan() {
           >
             <img src={back} alt="Back" className="w-6 h-6" />
           </button>
+          {/* Popup for the image */}
+          {popup.visible && (
+            <div
+              className="absolute z-50 bg-white p-2 rounded-lg shadow-lg"
+              style={{
+                top: `${popup.y}px`,
+                left: `${popup.x}px`,
+                transform: 'translate(-50%, -100%)', // Center above the button
+              }}
+            >
+              <img src={popup.image} alt="Recipe" className="w-32 h-auto rounded-lg" />
+              <div className="absolute w-4 h-4 bg-white transform rotate-45 -bottom-2 left-1/2 -translate-x-1/2 border border-gray-300"></div>
+            </div>
+          )}
           <h2 className="text-4xl font-semibold mt-8 mb-16 text-center text-gray-800">{title}</h2>
           <div className="w-full max-w-8xl bg-white p-8 rounded-3xl shadow-lg">
             <div className="grid grid-cols-1 md:grid-cols-7 gap-6">
@@ -188,9 +251,10 @@ function Plan() {
                       key={recipeIndex}
                       className={`${recipeColors[recipeIndex]} text-black text-sm font-medium border border-gray-400 p-2 rounded-3xl w-full h-20 flex items-center justify-center hover:border-2 hover:border-black hover:bg-opacity-75 transition-opacity duration-300`}
                       onClick={() => handleRecipeClick(recipe, recipeIndex)}
+                      onMouseEnter={(e) => handleRecipeHover(recipe, recipeIndex, e)}
+                      onMouseLeave={handleRecipeMouseLeave}
                     >
                       {recipe.meal}
-                      
                     </button>
                   ))}
                 </div>
