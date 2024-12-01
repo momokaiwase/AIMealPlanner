@@ -131,13 +131,11 @@ def get_week(request: WeekRequest):
         history = {}
         for day in ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]:
             plan = generate_day(request.restrictions, request.cuisines, request.calories, history, request.preferences)
-            print(request.preferences)
             history[day] = json.loads(plan)
 
         return WeeklyPlan(plan = history)
     except Exception as e:
         # retain previously raised HTTPExceptions, otherwise default to 500
-        print(e)
         if type(e) is HTTPException:
             raise e
         raise HTTPException(status_code=500, detail="Internal Server Error")
@@ -154,7 +152,6 @@ def get_recipe(request: Meal):
         return DailyRecipe(details = generated_recipe_json, image_url=image_url, response="", messages=[])
     except Exception as e:
         # retain previously raised HTTPExceptions, otherwise default to 500
-        print(f"Error occurred: {e}")
         if type(e) is HTTPException:
             raise e
         raise HTTPException(status_code=500, detail="Internal Server Error")
@@ -169,11 +166,13 @@ def update_recipe(request: UpdateRecipe):
         system_prompt = """
                     You are a helpful assistant that specializes in updating recipes. The user will provide you with a recipe and an update to the recipe. It is imperative that you follow these instructions when updating the recipe.
                     The recipe should entail a list of ingredients along with measurements of each ingredient, and a list of numbered steps to create this meal using all the ingredients. You must update the recipe with the provided information.
+                    It is imperative you answer any question given by the user about the recipe or your function and anything related to what you can do and your job.
                     You work work in these steps:
 
                     1. Read the recipe provided by the user.
-                    2. Determine whether the update is relevent to the recipe. If it is not, ask the user for more information and return the original recipe provided by the user.
-                    3. Update the recipe with the provided information.
+                    2. If the user asks a question, answer the question if it is related to the recipe or if the user has any questions.
+                    3. Determine whether the update is relevent to the recipe. If it is not, ask the user for more information and return the original recipe provided by the user.
+                    4. Update the recipe with the provided information.
                     """
         
         user_prompt = f"""
@@ -183,9 +182,10 @@ def update_recipe(request: UpdateRecipe):
                     
                     I would like to update the recipe with the following information:
                     {update}
-                    It is imperative that you follow these instructions when updating the recipe if it is relevant to the recipe. If it is not, please ask me for more information and return the original recipe provided by me.
+                    It is imperative that you follow these instructions when updating the recipe if it is relevant to the recipe.
                     It is imperative that you do not modify the original recipe or delete any information from the original recipe beyond what is necessary to make the dish. If the user requests to delete important aspects of the dish
-                    or modify the dish in a way that would make it unrecognizable, you must inform the user that you cannot make the requested changes.
+                    or modify the dish in a way that would make it unrecognizable, you must inform the user that you cannot make the requested changes and provide a thorough reason why. Answer any questions the user may have
+                    about the recipe or your function and anything related to what you can do and your job.
 
                     """
 
@@ -203,6 +203,8 @@ def update_recipe(request: UpdateRecipe):
         bot_response = {"text": response.choices[0].message.parsed.response, "sender": "bot"}
         updated_messages = existing_messages + [new_message, bot_response]
 
+
+
         return DailyRecipe(
             details=json.loads(response.choices[0].message.content),
             image_url=request.recipe.image_url,
@@ -211,7 +213,6 @@ def update_recipe(request: UpdateRecipe):
         )
     except Exception as e:
         # retain previously raised HTTPExceptions, otherwise default to 500
-        print(f"Error occurred: {e}")
         if type(e) is HTTPException:
             raise e
         raise HTTPException(status_code=500, detail="Internal Server Error")
