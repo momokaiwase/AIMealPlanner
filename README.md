@@ -1,7 +1,7 @@
 # AI Meal Planner
 
 ## Overview
-AI Meal Planner is a platform that takes user dietary needs and preference as input, and generates a weekly meal plan along with recipes for each meal.
+AI Meal Planner is a platform that takes user dietary needs and preferences as input, and generates a weekly meal plan along with recipes for each meal.
 
 ## Motivation
 The project was motivated by noticing the amount of stress and time meal planning consumes for a lot of students and other busy people with jobs. Our solution targets people who are too busy to plan their meals, and especially those who have specific dietary restrictions or needs that make it difficult for them to eat out or find recipes on the internet that cater to their needs. AI is useful for this project because it is knowledgable on ingredients and recipes, and can easily and quickly cater recipes to specific requests.
