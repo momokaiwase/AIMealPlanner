@@ -21,7 +21,7 @@ The project was motivated by noticing the amount of stress and time meal plannin
 
 ## Use Examples
 ### User Preference Input
-<img width="1458" alt="Screenshot 2025-01-01 at 22 10 40" src="https://github.com/user-attachments/assets/8c6b61bd-1914-4eb6-bbaf-97eb50d7574d" />
+![Screenshot 2025-01-15 at 16 02 00](https://github.com/user-attachments/assets/b29bfc70-0bb3-4125-a772-fc7003daf219)
 
 ### Generated Meal Plan Display
 ![Screenshot 2025-01-15 at 16 04 49](https://github.com/user-attachments/assets/050eb7c3-468d-48e3-93d6-965e3560f46c)
