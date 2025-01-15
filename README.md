@@ -1,16 +1,35 @@
-# MealPlanner
+# AI Meal Planner
 
-## setup
-use python 3.10.12
+## Overview
+AI Meal Planner is a platform that takes user dietary needs and preference as input, and generates a weekly meal plan along with recipes for each meal.
 
-### make virtual environment, this way we all are running the same versions of libraries in case there are any conflicsts
-python -m venv .venv OR python3 -m venv .venv
+## Motivation
+The project was motivated by noticing the amount of stress and time meal planning consumes for a lot of students and other busy people with jobs. Our solution targets people who are too busy to plan their meals, and especially those who have specific dietary restrictions or needs that make it difficult for them to eat out or find recipes on the internet that cater to their needs. AI is useful for this project because it is knowledgable on ingredients and recipes, and can easily and quickly cater recipes to specific requests.
 
-### activate venv
-source .venv/bin/activate
+## Features
+ * Dietary need/preference input: Users can select preferred cuisine types, target calories, basic dietary goals, and dietary restrictions.
+ * Meal Plan and Recipe Generation: Catering to the user's needs and preferences, a weekly meal plan is AI generated. For each meal, a recipe is AI generated as well. 
+ * Download Meal Plan: By downloading the weekly meal plan as a json file, users can upload the json file upon next use of the platform and view the saved meals.
+ * Chat Feature: The AI chat can allow users to ask questions about the recipe, including explaining certain steps or making slight changes to the recipe.
 
-### install dependencies
-pip install -r requirements.txt
+## Technologies Used 
+ * React
+ * Python
+ * Javascript
+ * TailwindCSS
+ * deployed on render, github pages
 
-### when adding/removing a new python library please add to requirements.txt then run:
-pip freeze -l > requirements.txt
+## Use Examples
+### User Preference Input
+<img width="1458" alt="Screenshot 2025-01-01 at 22 10 40" src="https://github.com/user-attachments/assets/8c6b61bd-1914-4eb6-bbaf-97eb50d7574d" />
+
+### Generated Meal Plan Display
+![Screenshot 2025-01-15 at 16 04 49](https://github.com/user-attachments/assets/050eb7c3-468d-48e3-93d6-965e3560f46c)
+![Screenshot 2025-01-15 at 16 05 21](https://github.com/user-attachments/assets/152d1e42-0f5f-4851-a0a8-445033b238ba)
+
+### Generated Meal Recipe Display
+![Screenshot 2025-01-15 at 16 05 51](https://github.com/user-attachments/assets/cb786e73-7514-4a03-8ee0-a702ea939235)
+![Screenshot 2025-01-15 at 16 06 41](https://github.com/user-attachments/assets/bc2e842d-d151-4e3e-9584-a85d2800c91f)
+
+
+
